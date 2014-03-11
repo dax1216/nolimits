@@ -310,6 +310,7 @@ if( !function_exists( 'theme_pagination' ) ){
                 $java_script_url = get_template_directory_uri().'/nolimit-js/';
 
                 // Registering Scripts
+				  wp_register_script('flexslider', $java_script_url.'flexslider/jquery.flexslider-min.js', array('jquery'), '2.1', false);
                 wp_register_script('easing', $java_script_url.'elastislide/jquery.easing.1.3.js', array('jquery'), '1.3', false);
                 wp_register_script('elastislide', $java_script_url.'elastislide/jquery.elastislide.js', array('jquery'), false);
                 wp_register_script('pretty-photo', $java_script_url.'prettyphoto/jquery.prettyPhoto.js', array('jquery'), '3.1.4', false);
