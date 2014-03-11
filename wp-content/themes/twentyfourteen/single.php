@@ -1,40 +1,58 @@
 <?php
-/**
- * The Template for displaying all single posts
- *
- * @package WordPress
- * @subpackage Twenty_Fourteen
- * @since Twenty Fourteen 1.0
- */
+get_header();
+?>
 
-get_header(); ?>
+        <!-- Page Head -->
+        <?php get_template_part("banners/blog_page_banner"); ?>
 
-	<div id="primary" class="content-area">
-		<div id="content" class="site-content" role="main">
-			<?php
-				// Start the Loop.
-				while ( have_posts() ) : the_post();
+        <!-- Content -->
+        <div class="container contents single">
+            <div class="row">
+                <div class="span9 main-wrap">
+                    <!-- Main Content -->
+                    <div class="main">
 
-					/*
-					 * Include the post format-specific template for the content. If you want to
-					 * use this in a child theme, then include a file called called content-___.php
-					 * (where ___ is the post format) and that will be used instead.
-					 */
-					get_template_part( 'content', get_post_format() );
+                        <div class="inner-wrapper">
+                            <?php
+                            if ( have_posts() ) :
+                                while ( have_posts() ) :
+                                    the_post();
 
-					// Previous/next post navigation.
-					twentyfourteen_post_nav();
+                                    $format = get_post_format();
+                                    if( false === $format ) { $format = 'standard'; }
 
-					// If comments are open or we have at least one comment, load up the comment template.
-					if ( comments_open() || get_comments_number() ) {
-						comments_template();
-					}
-				endwhile;
-			?>
-		</div><!-- #content -->
-	</div><!-- #primary -->
+                                    ?>
+                                    <article  <?php post_class(); ?>>
+                                            <header>
+                                                <h3 class="post-title"><?php the_title(); ?></h3>
+                                                <div class="post-meta <?php echo $format; ?>-meta thumb-<?php echo has_post_thumbnail()?'exist':'not-exist'; ?>">
+                                                    <span> <?php _e('Posted on', 'framework'); ?>  <span class="date"> <?php the_time('F d, Y'); ?> </span></span>
+                                                    <span> <?php _e('by', 'framework'); ?> <?php the_author(); ?> <?php _e('in', 'framework'); ?>  <?php the_category(', '); ?>  </span>
+                                                </div>
+                                            </header>
+                                            <?php
+                                            get_template_part( 'post-formats/' . $format );
+                                            the_content();
+                                            ?>
+                                    </article>
+                                    <?php
 
-<?php
-get_sidebar( 'content' );
-get_sidebar();
-get_footer();
+                                    wp_link_pages(array('before' => '<div class="pages-nav clearfix">', 'after' => '</div>', 'next_or_number' => 'next'));
+
+                                endwhile;
+                                comments_template();
+                            endif;
+                            ?>
+                        </div>
+
+                    </div><!-- End Main Content -->
+
+                </div> <!-- End span9 -->
+
+                <?php get_sidebar(); ?>
+
+            </div><!-- End contents row -->
+
+        </div><!-- End Content -->
+
+<?php get_footer(); ?>

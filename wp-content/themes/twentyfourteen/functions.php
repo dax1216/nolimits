@@ -32,6 +32,382 @@
  *
  * @since Twenty Fourteen 1.0
  */
+ 
+ 
+ /*No Limits Codes Start Here*/
+ 
+/*	Load Text Domain
+/*-----------------------------------------------------------------------------------*/
+    load_theme_textdomain( 'framework' ); 
+ 
+ /*	Include Meta Box
+/*-----------------------------------------------------------------------------------*/
+    define( 'RWMB_URL', trailingslashit( get_template_directory_uri() . '/framework/meta-box' ) );
+    define( 'RWMB_DIR', trailingslashit( get_template_directory() . '/framework/meta-box' ) );
+    require_once RWMB_DIR . 'meta-box.php';
+    require_once RWMB_DIR . 'config-meta-boxes.php';
+
+/*	Include Custom Post Types
+/*-----------------------------------------------------------------------------------*/
+    require_once ( get_template_directory() . '/framework/include/caring-post-type.php' );
+
+
+/*	Include Theme Options Framework
+/*-----------------------------------------------------------------------------------*/
+    require_once(get_template_directory() . '/framework/admin/admin-functions.php');
+    require_once(get_template_directory() . '/framework/admin/admin-interface.php');
+    require_once(get_template_directory() . '/framework/admin/theme-settings.php');
+
+ 
+
+/*-----------------------------------------------------------------------------------*/
+/*	Include Theme Functions for Various Important Features
+/*-----------------------------------------------------------------------------------*/
+    require_once(get_template_directory() . '/framework/functions/contact_form_handler.php');
+    require_once(get_template_directory() . '/framework/functions/theme_comment.php');
+
+/*-----------------------------------------------------------------------------------*/
+// Generate Hirarchical Options
+/*-----------------------------------------------------------------------------------*/
+if(!function_exists('generate_hirarchical_options')){
+    function generate_hirarchical_options($taxonomy_name, $taxonomy_terms, $searched_term, $prefix = " " ){
+        if (!empty($taxonomy_terms)) {
+            foreach ($taxonomy_terms as $term) {
+                if ($searched_term == $term->slug) {
+                    echo '<option value="' . $term->slug . '" selected="selected">' . $prefix . $term->name . '</option>';
+                } else {
+                    echo '<option value="' . $term->slug . '">' . $prefix . $term->name . '</option>';
+                }
+                $child_terms = get_terms($taxonomy_name, array(
+                    'hide_empty' => false,
+                    'parent' => $term->term_id
+                ));
+
+                if (!empty($child_terms)) {
+                    /* Recursive Call */
+                    generate_hirarchical_options( $taxonomy_name, $child_terms, $searched_term, "- ".$prefix );
+                }
+            }
+        }
+    }
+}
+
+/*-----------------------------------------------------------------------------------*/
+// Propert Submit/Edit Form Helper Function
+/*-----------------------------------------------------------------------------------*/
+if( !function_exists( 'is_valid_image' ) ){
+    function is_valid_image($file_name){
+        $valid_image_extensions = array( "jpg", "jpeg", "gif", "png" );
+        $exploded_array = explode('.',$file_name);
+        if( !empty($exploded_array) && is_array($exploded_array) ){
+            $ext = array_pop( $exploded_array );
+            return in_array( $ext, $valid_image_extensions );
+        }else{
+            return false;
+        }
+    }
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	Get Default Banner
+/*-----------------------------------------------------------------------------------*/
+if(!function_exists('get_default_banner')){
+    function get_default_banner(){
+        $banner_image_path = get_option('theme_general_banner_image');
+        return empty($banner_image_path)? get_template_directory_uri().'/images/banner.jpg' :$banner_image_path;
+    }
+}
+
+
+
+/*-----------------------------------------------------------------------------------*/
+/*	Get Lightbox Plugin Class
+/*-----------------------------------------------------------------------------------*/
+if(!function_exists('get_lightbox_plugin_class')){
+    function get_lightbox_plugin_class(){
+        $lightbox_plugin_class = get_option('theme_lightbox_plugin');
+        if($lightbox_plugin_class){
+            return $lightbox_plugin_class;
+        }else{
+            return 'swipebox';
+        }
+    }
+}
+
+
+
+/*-----------------------------------------------------------------------------------*/
+/*	Generate Gallery Attribute
+/*-----------------------------------------------------------------------------------*/
+if(!function_exists('generate_gallery_attribute')){
+    function generate_gallery_attribute(){
+        $lightbox_plugin_class = get_lightbox_plugin_class();
+        if($lightbox_plugin_class == 'pretty-photo'){
+            return 'data-rel="prettyPhoto[real_homes]"';
+        }
+        return '';
+    }
+}
+
+
+/*-----------------------------------------------------------------------------------*/
+// Alert
+/*-----------------------------------------------------------------------------------*/
+if( !function_exists( 'alert' ) ){
+    function alert( $heading = '', $message = '' ){
+        echo '<div class="alert">';
+        echo '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+        echo '<strong>'.$heading.'</strong> <span>'.$message.'</span>';
+        echo '</div>';
+    }
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	Insert Attachment Method for Property Submit Template
+/*-----------------------------------------------------------------------------------*/
+if( !function_exists( 'insert_attachment' ) ){
+    function insert_attachment( $file_handler, $post_id, $setthumb = false ){
+
+        // check to make sure its a successful upload
+        if ($_FILES[$file_handler]['error'] !== UPLOAD_ERR_OK) __return_false();
+
+        require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+        require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+        require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+
+        $attach_id = media_handle_upload( $file_handler, $post_id );
+
+        if ($setthumb){
+            update_post_meta($post_id,'_thumbnail_id',$attach_id);
+        }
+
+        return $attach_id;
+    }
+}
+/*-----------------------------------------------------------------------------------*/
+//	Theme Pagination Method
+/*-----------------------------------------------------------------------------------*/
+if( !function_exists( 'theme_pagination' ) ){
+    function theme_pagination($pages = ''){
+        global $paged;
+
+        if(is_page_template('template-home.php')){
+            $paged = intval(get_query_var( 'page' ));
+        }
+
+        if(empty($paged))$paged = 1;
+
+        $prev = $paged - 1;
+        $next = $paged + 1;
+        $range = 2; // only change it to show more links
+        $showitems = ($range * 2)+1;
+
+        if($pages == ''){
+            global $wp_query;
+            $pages = $wp_query->max_num_pages;
+            if(!$pages){
+                $pages = 1;
+            }
+        }
+
+
+        if(1 != $pages){
+            echo "<div class='pagination'>";
+            echo ($paged > 2 && $paged > $range+1 && $showitems < $pages)? "<a href='".get_pagenum_link(1)."' class='real-btn'>&laquo; ".__('First', 'framework')."</a> ":"";
+            echo ($paged > 1 && $showitems < $pages)? "<a href='".get_pagenum_link($prev)."' class='real-btn' >&laquo; ". __('Previous', 'framework')."</a> ":"";
+
+            for ($i=1; $i <= $pages; $i++){
+                if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems )){
+                    echo ($paged == $i)? "<a href='".get_pagenum_link($i)."' class='real-btn current' >".$i."</a> ":"<a href='".get_pagenum_link($i)."' class='real-btn'>".$i."</a> ";
+                }
+            }
+
+            echo ($paged < $pages && $showitems < $pages) ? "<a href='".get_pagenum_link($next)."' class='real-btn' >". __('Next', 'framework') ." &raquo;</a> " :"";
+            echo ($paged < $pages-1 &&  $paged+$range-1 < $pages && $showitems < $pages) ? "<a href='".get_pagenum_link($pages)."' class='real-btn' >". __('Last', 'framework') ." &raquo;</a> ":"";
+            echo "</div>";
+        }
+    }
+}
+
+
+
+/*-----------------------------------------------------------------------------------*/
+/*	Load Required CSS Styles
+/*-----------------------------------------------------------------------------------*/
+    if(!function_exists('load_theme_styles')){
+        function load_theme_styles(){
+            if (!is_admin()){
+
+                // enqueue required fonts
+                $protocol = is_ssl() ? 'https' : 'http';
+                wp_enqueue_style( 'theme-roboto', "$protocol://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic&subset=latin,cyrillic" );
+                wp_enqueue_style( 'theme-lato', "$protocol://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" );
+
+                // register styles
+                wp_register_style('bootstrap-css',  get_template_directory_uri() . '/nolimit-css/bootstrap.css', array(), '2.2.2', 'all');
+                wp_register_style('responsive-css',  get_template_directory_uri() . '/nolimit-css/responsive.css', array(), '2.2.2', 'all');
+                wp_register_style('awesome-font-css',  get_template_directory_uri() . '/nolimit-css/font-awesome.min.css', array(), '3.0.2', 'all');
+                wp_register_style('pretty-photo-css',  get_template_directory_uri() . '/nolimit-js/prettyphoto/prettyPhoto.css', array(), '3.1.4', 'all');
+                wp_register_style('swipebox-css',  get_template_directory_uri() . '/nolimit-js/swipebox/swipebox.css', array(), '3.1.4', 'all');
+                wp_register_style('flexslider-css',  get_template_directory_uri() . '/nolimit-js/flexslider/flexslider.css', array(), '2.1', 'all');
+                wp_register_style('main-css',  get_template_directory_uri() . '/nolimit-css/main.css', array(), '1.3', 'all');
+                wp_register_style('custom-responsive-css',  get_template_directory_uri() . '/nolimit-css/custom-responsive.css', array(), '1.0', 'all');
+                wp_register_style('custom-css',  get_template_directory_uri() . '/nolimit-css/custom.css', array(), '1.0', 'all');
+
+                // enqueue bootstrap styles
+                wp_enqueue_style('bootstrap-css');
+
+                $disable_responsive_styles = get_option('theme_disable_responsive');
+                if($disable_responsive_styles != "true"){
+                    // enqueue bootstrap responsive styles
+                    wp_enqueue_style('responsive-css');
+                }
+
+                // Awesome font css
+                wp_enqueue_style('awesome-font-css');
+
+                // Flex Slider
+                wp_enqueue_style('flexslider-css');
+
+                // enqueue Pretty Photo styles
+                wp_enqueue_style('pretty-photo-css');
+
+                // enqueue Swipe Box styles
+                wp_enqueue_style('swipebox-css');
+
+                // enqueue Main styles
+                wp_enqueue_style('main-css');
+
+                if( $disable_responsive_styles != "true" ){
+                    // enqueue custom responsive styles
+                    wp_enqueue_style('custom-responsive-css');
+                }
+
+                // enqueue Custom styles
+                wp_enqueue_style('custom-css');
+
+                if(is_child_theme()){
+                    wp_register_style('child-custom-css',  get_stylesheet_directory_uri() . '/child-custom.css', array(), '1.0', 'all');
+                    // enqueue custom styles for Child Theme
+                    wp_enqueue_style('child-custom-css');
+                }
+            }
+        }
+    }
+    add_action('wp_enqueue_scripts', 'load_theme_styles');
+
+
+
+
+/*-----------------------------------------------------------------------------------*/
+/*	Load Required JS Scripts
+/*-----------------------------------------------------------------------------------*/
+    if(!function_exists('load_theme_scripts')){
+        function load_theme_scripts(){
+            if (!is_admin()) {
+
+                // Defining scripts directory url
+                $java_script_url = get_template_directory_uri().'/nolimit-js/';
+
+                // Registering Scripts
+                wp_register_script('easing', $java_script_url.'elastislide/jquery.easing.1.3.js', array('jquery'), '1.3', false);
+                wp_register_script('elastislide', $java_script_url.'elastislide/jquery.elastislide.js', array('jquery'), false);
+                wp_register_script('pretty-photo', $java_script_url.'prettyphoto/jquery.prettyPhoto.js', array('jquery'), '3.1.4', false);
+                wp_register_script('isotope', $java_script_url.'jquery.isotope.min.js', array('jquery'), '1.5.25', false);
+                wp_register_script('jcarousel', $java_script_url.'jquery.jcarousel.min.js', array('jquery'), '0.2.9', false);
+                wp_register_script('jqvalidate', $java_script_url.'jquery.validate.min.js', array('jquery'), '1.11.1', false);
+                wp_register_script('jqform', $java_script_url.'jquery.form.js', array('jquery'), '3.40', false);
+                wp_register_script('selectbox', $java_script_url.'jquery.selectbox.js', array('jquery'), '1.2', false);
+                wp_register_script('jqtransit', $java_script_url.'jquery.transit.min.js', array('jquery'), '0.9.9', false);
+                wp_register_script('bootstrap', $java_script_url.'bootstrap.min.js', array('jquery'), false);
+                wp_register_script('swipebox', $java_script_url.'swipebox/jquery.swipebox.min.js', array('jquery'),'1.2.1', false);
+                wp_register_script('google-map-api', '//maps.google.com/maps/api/js?sensor=true', array(), '', false);
+
+                // Custom Script
+                wp_register_script('custom',$java_script_url.'custom.js', array('jquery'), '1.0', true);
+
+                // Enqueue Scripts that are needed on all the pages
+                wp_enqueue_script('jquery');
+                wp_enqueue_script('jquery-ui-core');
+                wp_enqueue_script('jquery-ui-autocomplete');
+                wp_enqueue_script('flexslider');
+                wp_enqueue_script('easing');
+                wp_enqueue_script('elastislide');
+                wp_enqueue_script('pretty-photo');
+                wp_enqueue_script('swipebox');
+                wp_enqueue_script('isotope');
+                wp_enqueue_script('jcarousel');
+                wp_enqueue_script('jqvalidate');
+                wp_enqueue_script('jqform');
+                wp_enqueue_script('selectbox');
+                wp_enqueue_script('jqtransit');
+                wp_enqueue_script('bootstrap');
+                wp_enqueue_script('google-map-api');
+
+                if(is_singular('post') || is_page()){
+                    wp_enqueue_script( 'comment-reply' );
+                }
+
+                wp_enqueue_script('custom');
+
+                // Responsive Navigation Title Translation Support - Ref : http://codex.wordpress.org/Function_Reference/wp_localize_script
+                $localized_array = array('nav_title' => __('Go to...','framework'));
+                wp_localize_script( 'custom', 'localized', $localized_array );
+            }
+        }
+    }
+    add_action('wp_enqueue_scripts', 'load_theme_scripts');
+
+
+	
+add_filter( 'comment_form_defaults', 'custom_comment_form_defaults' );
+function custom_comment_form_defaults( $args ) {
+    if ( is_user_logged_in() ) {
+        $mce_plugins = 'inlinepopups, fullscreen, wordpress, wplink, wpdialogs';
+    } else {
+        $mce_plugins = 'fullscreen, wordpress';
+    }
+    ob_start();
+    wp_editor( '', 'comment', array(
+        'media_buttons' => true,
+        'teeny' => true,
+        'textarea_rows' => '7',
+        'tinymce' => array( 'plugins' => $mce_plugins )
+    ) );
+    $args['comment_field'] = ob_get_clean();
+    return $args;
+}
+
+add_action( 'wp_enqueue_scripts', '__THEME_PREFIX__scripts' );
+function __THEME_PREFIX__scripts() {
+    wp_enqueue_script('jquery');
+}
+add_filter( 'comment_reply_link', '__THEME_PREFIX__comment_reply_link' );
+function __THEME_PREFIX__comment_reply_link($link) {
+    return str_replace( 'onclick=', 'data-onclick=', $link );
+}
+add_action( 'wp_head', '__THEME_PREFIX__wp_head' );
+function __THEME_PREFIX__wp_head() {
+?>
+<script type="text/javascript">
+    jQuery(function($){
+        $('.comment-reply-link').click(function(e){
+            e.preventDefault();
+            var args = $(this).data('onclick');
+            args = args.replace(/.*\(|\)/gi, '').replace(/\"|\s+/g, '');
+            args = args.split(',');
+            tinymce.EditorManager.execCommand('mceRemoveControl', true, 'comment');
+            addComment.moveForm.apply( addComment, args );
+            tinymce.EditorManager.execCommand('mceAddControl', true, 'comment');
+        });
+    });
+</script>
+<?php }
+ 
+ /*End of No Limits Codes*/
+ 
+ 
+ 
 if ( ! isset( $content_width ) ) {
 	$content_width = 474;
 }
