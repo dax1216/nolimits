@@ -361,49 +361,26 @@ if( !function_exists( 'theme_pagination' ) ){
 
 
 	
-add_filter( 'comment_form_defaults', 'custom_comment_form_defaults' );
-function custom_comment_form_defaults( $args ) {
-    if ( is_user_logged_in() ) {
-        $mce_plugins = 'inlinepopups, fullscreen, wordpress, wplink, wpdialogs';
-    } else {
-        $mce_plugins = 'fullscreen, wordpress';
-    }
-    ob_start();
-    wp_editor( '', 'comment', array(
-        'media_buttons' => true,
-        'teeny' => true,
-        'textarea_rows' => '7',
-        'tinymce' => array( 'plugins' => $mce_plugins )
-    ) );
-    $args['comment_field'] = ob_get_clean();
-    return $args;
-}
-
-add_action( 'wp_enqueue_scripts', '__THEME_PREFIX__scripts' );
-function __THEME_PREFIX__scripts() {
-    wp_enqueue_script('jquery');
-}
-add_filter( 'comment_reply_link', '__THEME_PREFIX__comment_reply_link' );
-function __THEME_PREFIX__comment_reply_link($link) {
-    return str_replace( 'onclick=', 'data-onclick=', $link );
-}
-add_action( 'wp_head', '__THEME_PREFIX__wp_head' );
-function __THEME_PREFIX__wp_head() {
+add_action( 'comment_form_after', 'tinyMCE_comment_form' );
+function tinyMCE_comment_form() {
 ?>
-<script type="text/javascript">
-    jQuery(function($){
-        $('.comment-reply-link').click(function(e){
-            e.preventDefault();
-            var args = $(this).data('onclick');
-            args = args.replace(/.*\(|\)/gi, '').replace(/\"|\s+/g, '');
-            args = args.split(',');
-            tinymce.EditorManager.execCommand('mceRemoveControl', true, 'comment');
-            addComment.moveForm.apply( addComment, args );
-            tinymce.EditorManager.execCommand('mceAddControl', true, 'comment');
+    <script type="text/javascript" src="<?php echo includes_url( 'js/tinymce/tiny_mce.js' ); ?>"></script>;
+    <script type="text/javascript">
+        tinyMCE.init({
+            theme : "advanced",
+            mode: "specific_textareas",
+            language: "",
+            skin: "default",
+            theme_advanced_buttons1: 'bold, italic, underline, blockquote, image, strikethrough, bullist, numlist, undo, redo, link, unlink',
+            theme_advanced_buttons2: '',
+            theme_advanced_buttons3: '',
+            theme_advanced_buttons4: '',
+            elements: 'comment',
+            theme_advanced_toolbar_location : "top",
         });
-    });
-</script>
-<?php }
+    </script>
+<?php
+}
  
  /*End of No Limits Codes*/
  
