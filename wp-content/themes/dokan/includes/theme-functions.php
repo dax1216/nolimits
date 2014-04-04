@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/order-functions.php';
-require_once __DIR__ . '/withdraw-functions.php';
+require_once dirname(__FILE__) . '/order-functions.php';
+require_once dirname(__FILE__) . '/withdraw-functions.php';
 
 /**
  * Enqueue report related scripts
@@ -735,6 +735,19 @@ function dokan_get_store_url( $user_id ) {
 }
 
 
+/**
+ * Get review page url of a seller
+ *
+ * @param int $user_id
+ * @return string
+ */
+function dokan_get_review_url( $user_id ) {
+    $userstore = dokan_get_store_url( $user_id );
+
+    return $userstore ."reviews";
+}
+
+
 
 /**
  * Helper function for loggin
@@ -1055,7 +1068,7 @@ function dokan_number_format( $number ) {
 
 /**
  * Get coupon edit url
- * 
+ *
  * @param int $coupon_id
  * @param string $coupon_page
  * @return string
@@ -1070,3 +1083,47 @@ function dokan_get_coupon_edit_url( $coupon_id, $coupon_page = '' ) {
 
     return $edit_url;
 }
+
+/**
+ * User avatar wrapper for custom uploaded avatar
+ *
+ * @since 2.0
+ *
+ * @param string $avatar
+ * @param mixed $id_or_email
+ * @param int $size
+ * @param string $default
+ * @param string $alt
+ * @return string image tag of the user avatar
+ */
+function dokan_get_avatar( $avatar, $id_or_email, $size, $default, $alt ) {
+
+    if ( is_numeric( $id_or_email ) ) {
+        $user = get_user_by( 'id', $id_or_email );
+    } elseif ( is_object( $id_or_email ) ) {
+        if ( $id_or_email->user_id != '0' ) {
+            $user = get_user_by( 'id', $id_or_email->user_id );
+        } else {
+            return $avatar;
+        }
+    } else {
+        $user = get_user_by( 'email', $id_or_email );
+    }
+
+    if ( !$user ) {
+        return $avatar;
+    }
+
+    // see if there is a user_avatar meta field
+    $user_avatar = get_user_meta( $user->ID, 'dokan_profile_settings', true );
+    $gravatar_id = isset( $user_avatar['gravatar'] ) ? $user_avatar['gravatar'] : 0;
+    if ( empty( $gravatar_id ) ) {
+        return $avatar;
+    }
+
+    $avater_url = wp_get_attachment_thumb_url( $gravatar_id );
+
+    return sprintf( '<img src="%1$s" alt="%2$s" width="%3$s" height="%3$s" class="avatar photo">', esc_url( $avater_url ), $alt, $size );
+}
+
+add_filter( 'get_avatar', 'dokan_get_avatar', 99, 5 );

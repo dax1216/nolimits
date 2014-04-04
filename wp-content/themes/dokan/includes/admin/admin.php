@@ -175,12 +175,27 @@ class Dokan_Admin_Settings {
                     'type' => 'text',
                 ),
                 array(
+                    'name' => 'order_status_change',
+                    'label' => __( 'Order Status Change', 'dokan' ),
+                    'desc' => __( 'Seller Could Change Order Status', 'dokan' ),
+                    'type' => 'checkbox',
+                    'default' => 'on'
+                ),
+                array(
                     'name' => 'withdraw_methods',
                     'label' => __( 'Withdraw Methods', 'dokan' ),
                     'desc' => __( 'Withdraw methods for sellers', 'dokan' ),
                     'type' => 'multicheck',
                     'default' => array( 'paypal' => 'paypal' ),
                     'options' => dokan_withdraw_get_methods()
+                ),
+                array(
+                    'name' => 'withdraw_order_status',
+                    'label' => __( 'Order Status for Withdraw', 'dokan' ),
+                    'desc' => __( 'Order status for which seller can make a withdraw request.', 'dokan' ),
+                    'type' => 'multicheck',
+                    'default' => array( 'completed' => __( 'Completed', 'dokan' ), 'processing' => __( 'Processing', 'dokan' ), 'on-hold' => __( 'On-hold', 'dokan' ) ),
+                    'options' => array( 'completed' => __( 'Completed', 'dokan' ), 'processing' => __( 'Processing', 'dokan' ), 'on-hold' => __( 'On-hold', 'dokan' ) )
                 ),
                 array(
                     'name' => 'withdraw_limit',
@@ -309,7 +324,7 @@ class Dokan_Admin_Settings {
     }
 
     function dashboard() {
-        include __DIR__ . '/dashboard.php';
+        include dirname(__FILE__) . '/dashboard.php';
     }
 
     function settings_page() {
@@ -323,11 +338,11 @@ class Dokan_Admin_Settings {
     }
 
     function withdraw_page() {
-        include __DIR__ . '/withdraw.php';
+        include dirname(__FILE__) . '/withdraw.php';
     }
 
     function seller_listing() {
-        include __DIR__ . '/sellers.php';
+        include dirname(__FILE__) . '/sellers.php';
     }
 
     function report_page() {
@@ -335,11 +350,11 @@ class Dokan_Admin_Settings {
 
         dokan_reports_scripts();
 
-        include __DIR__ . '/reports.php';
+        include dirname(__FILE__) . '/reports.php';
     }
 
     function addon_page() {
-        include __DIR__ . '/add-on.php';
+        include dirname(__FILE__) . '/add-on.php';
     }
 
 }

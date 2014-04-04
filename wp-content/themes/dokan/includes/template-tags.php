@@ -363,40 +363,49 @@ function dokan_category_widget() {
     );
 }
 
+
 function dokan_seller_reg_form_fields() {
     $role = isset( $_POST['role'] ) ? $_POST['role'] : 'customer';
     $role_style = ( $role == 'customer' ) ? ' style="display:none"' : '';
     ?>
     <div class="show_if_seller"<?php echo $role_style; ?>>
+
         <div class="split-row form-row-wide">
-            <p class="form-row">
+            <p class="form-row form-group">
                 <label for="first-name"><?php _e( 'First Name', 'dokan' ); ?> <span class="required">*</span></label>
-                <input type="text" class="input-text form-control" name="fname" id="first-name" value="<?php if ( ! empty( $_POST['fname'] ) ) echo esc_attr($_POST['fname']); ?>" />
+                <input type="text" class="input-text form-control" name="fname" id="first-name" value="<?php if ( ! empty( $_POST['fname'] ) ) echo esc_attr($_POST['fname']); ?>" required="required" />
             </p>
 
-            <p class="form-row">
+            <p class="form-row form-group">
                 <label for="last-name"><?php _e( 'Last Name', 'dokan' ); ?> <span class="required">*</span></label>
-                <input type="text" class="input-text form-control" name="lname" id="last-name" value="<?php if ( ! empty( $_POST['lname'] ) ) echo esc_attr($_POST['lname']); ?>" />
+                <input type="text" class="input-text form-control" name="lname" id="last-name" value="<?php if ( ! empty( $_POST['lname'] ) ) echo esc_attr($_POST['lname']); ?>" required="required" />
             </p>
         </div>
 
-        <p class="form-row form-row-wide">
-            <label for="company-name"><?php _e( 'Shop Name', 'dokan' ); ?></label>
-            <input type="text" class="input-text form-control" name="shopname" id="company-name" value="<?php if ( ! empty( $_POST['shopname'] ) ) echo esc_attr($_POST['shopname']); ?>" />
+        <p class="form-row form-group form-row-wide">
+            <label for="company-name"><?php _e( 'Shop Name', 'dokan' ); ?> <span class="required">*</span></label>
+            <input type="text" class="input-text form-control" name="shopname" id="company-name" value="<?php if ( ! empty( $_POST['shopname'] ) ) echo esc_attr($_POST['shopname']); ?>" required="required" />
         </p>
 
-        <p class="form-row form-row-wide">
+        <p class="form-row form-group form-row-wide">
+            <label for="seller-url" class="pull-left"><?php _e( 'Shop URL', 'dokan' ); ?> <span class="required">*</span></label>
+            <strong id="url-alart-mgs" class="pull-right"></strong>
+            <input type="text" class="input-text form-control" name="shopurl" id="seller-url" value="<?php if ( ! empty( $_POST['shopurl'] ) ) echo esc_attr($_POST['shopurl']); ?>" required="required" />
+            <small><?php echo home_url(); ?>/store/<strong id="url-alart"></strong></small>
+        </p>
+
+        <p class="form-row form-group form-row-wide">
             <label for="seller-address"><?php _e( 'Address', 'dokan' ); ?><span class="required">*</span></label>
-            <textarea type="text" id="seller-address" name="address" class="form-control input"><?php if ( ! empty( $_POST['address'] ) ) echo esc_textarea($_POST['address']); ?></textarea>
+            <textarea type="text" id="seller-address" name="address" class="form-control input" required="required"><?php if ( ! empty( $_POST['address'] ) ) echo esc_textarea($_POST['address']); ?></textarea>
         </p>
 
-        <p class="form-row form-row-wide">
+        <p class="form-row form-group form-row-wide">
             <label for="shop-phone"><?php _e( 'Phone', 'dokan' ); ?><span class="required">*</span></label>
-            <input type="text" class="input-text form-control" name="phone" id="shop-phone" value="<?php if ( ! empty( $_POST['phone'] ) ) echo esc_attr($_POST['phone']); ?>" />
+            <input type="text" class="input-text form-control" name="phone" id="shop-phone" value="<?php if ( ! empty( $_POST['phone'] ) ) echo esc_attr($_POST['phone']); ?>" required="required" />
         </p>
     </div>
 
-    <p class="form-row user-role">
+    <p class="form-row form-group user-role">
         <label class="radio">
             <input type="radio" name="role" value="customer"<?php checked( $role, 'customer' ); ?>>
             <?php _e( 'I am a customer', 'dokan' ); ?>
@@ -407,20 +416,6 @@ function dokan_seller_reg_form_fields() {
             <?php _e( 'I am a seller', 'dokan' ); ?>
         </label>
     </p>
-
-    <script type="text/javascript">
-        jQuery(function($) {
-            $('.user-role input[type=radio]').on('change', function() {
-                var value = $(this).val();
-
-                if ( value === 'seller') {
-                    $('.show_if_seller').slideDown();
-                } else {
-                    $('.show_if_seller').slideUp();
-                }
-            });
-        });
-    </script>
     <?php
 }
 

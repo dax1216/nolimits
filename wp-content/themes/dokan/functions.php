@@ -133,6 +133,7 @@ class WeDevs_Dokan {
 
         require_once $inc_dir . 'theme-functions.php';
         require_once $inc_dir . 'widgets/menu-category.php';
+        require_once $inc_dir . 'widgets/best-seller.php';
         require_once $classes_dir . 'customizer.php';
         require_once $inc_dir . 'wc-functions.php';
 
@@ -297,10 +298,14 @@ class WeDevs_Dokan {
         wp_enqueue_script( 'flexslider', $template_directory . '/assets/js/jquery.flexslider-min.js', array('jquery') );
 
         wp_enqueue_script( 'dokan-scripts', $template_directory . '/assets/js/script.js', false, null, true );
-        wp_localize_script( 'dokan-scripts', 'dokan', array(
+        wp_localize_script( 'jquery', 'dokan', array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'nonce' => wp_create_nonce( 'dokan_reviews' ),
-            'ajax_loader' => $template_directory . '/assets/images/ajax-loader.gif'
+            'ajax_loader' => $template_directory . '/assets/images/ajax-loader.gif',
+            'seller' => array(
+                'available' => __( 'Available', 'dokan' ),
+                'notAvailable' => __( 'Not Available', 'dokan' )
+            )
         ) );
     }
 

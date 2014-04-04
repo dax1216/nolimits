@@ -56,6 +56,36 @@ class Dokan_Ajax {
         add_action( 'wp_ajax_dokan_save_attributes', array( $this, 'save_attributes' ) );
 
         add_action( 'wp_ajax_dokan_toggle_seller', array( $this, 'toggle_seller_status' ) );
+
+
+        add_action( 'wp_ajax_nopriv_shop_url', array($this, 'shop_url_check') );
+    }
+
+    /**
+     * chop url check
+     */
+    function shop_url_check() {
+        
+        if ( !wp_verify_nonce( $_POST['_nonce'], 'dokan_reviews' ) ) {
+            wp_send_json_error( array(
+                'type' => 'nonce',
+                'message' => 'Are you cheating?'
+            ) );
+        }
+
+        $url_slug = $_POST['url_slug'];
+
+        $check = true;
+
+        $user = get_user_by( 'slug', $url_slug );
+
+        if ( $user != '' ) {
+            $check = false;
+        }
+
+        echo $check;
+
+
     }
 
     /**
@@ -68,7 +98,7 @@ class Dokan_Ajax {
             die();
         }
 
-        if ( !current_user_can( 'dokandar' ) ) {
+        if ( !current_user_can( 'dokandar' ) || dokan_get_option( 'order_status_change', 'dokan_selling', 'on' ) != 'on' ) {
             wp_die( __( 'You do not have sufficient permissions to access this page.', 'dokan' ) );
         }
 
@@ -102,7 +132,7 @@ class Dokan_Ajax {
             die();
         }
 
-        if ( !current_user_can( 'edit_shop_orders' ) ) {
+        if ( !current_user_can( 'edit_shop_orders' ) || dokan_get_option( 'order_status_change', 'dokan_selling', 'on' ) != 'on' ) {
             wp_die( __( 'You do not have sufficient permissions to access this page.', 'dokan' ) );
         }
 
@@ -600,7 +630,7 @@ class Dokan_Ajax {
 
     /**
      * Make all the products to pending once a seller is deactivated for selling
-     * 
+     *
      * @param int $seller_id
      */
     function make_products_pending( $seller_id ) {
