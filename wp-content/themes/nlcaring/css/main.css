@@ -527,6 +527,7 @@ h1.page-title, h2.page-title{
 	float:left;
 	margin-right:25px;
 	min-height:335px;
+	padding-bottom:36px;
 }
 .callToHelp .slider.big{
 	padding-top:38px;
@@ -641,6 +642,7 @@ h1.page-title, h2.page-title{
 #description.hidden{ display:none;}
 .helpInstruction{
 	position:relative;
+	padding-top:36px;
 }
 .helpInstruction h3{
 	color:#333333;
@@ -663,9 +665,8 @@ h1.page-title, h2.page-title{
 	background:url(../images/btn-hero.png) no-repeat left top;
 	height:157px;width:192px;
 	display:block;
-	position:absolute;
-	right:0;
-	top:0;
+	float: right;
+	margin-right: 25px;
 }
 .btn-hero:active{
 	background-position:left bottom;
@@ -679,12 +680,12 @@ h1.page-title, h2.page-title{
 .participants > li{ border-bottom:1px solid #d3d3d3; padding-top:15px;}
 .participants{}
 .participantsInfo{}
-.participantsName{ font-size:15px; color:#333333;}
+.participantsName{ font-size:15px; color:#333333; text-transform: uppercase;}
 .participantsName .flag{}
 .participantsMessage{ font-size:14px; color:#999999; padding-bottom:10px;}
 .participantsAttachedment{}
-.imgAttached .thumbnail{ height:100px; }
-.imgAttached > li{ width:140px; float:left; margin:0 20px 20px 0;}
+.imgAttached .thumbnail{ height:100px; overflow:hidden;}
+.imgAttached > li{ width:140px; float:left; margin:15px 20px 0px 0;}
 
 /* =Gallery of Love
 -------------------------------------------------------------- */

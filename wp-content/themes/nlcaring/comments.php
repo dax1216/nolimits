@@ -11,9 +11,10 @@
             <?php comments_number(__('No Comment','framework'), __('One Comment','framework'), __('(%) Comments','framework') );?>
 		</h3>
 
-		<ol class="commentlist">
+		<ul class="participants">
 			<?php wp_list_comments( array( 'callback' => 'theme_comment' ) ); ?>
-		</ol>
+		
+		</ul>
 
 		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ): ?>
 		
@@ -31,6 +32,6 @@
 		
 	<?php endif; ?>
 
-	<?php comment_form(); ?>
+	<?php comment_form(array('comment_notes_after' => '')); ?>
 
 </section><!-- end of comments -->

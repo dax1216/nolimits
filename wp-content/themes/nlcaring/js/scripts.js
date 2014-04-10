@@ -5,7 +5,6 @@ var noLimits = {
 	misc: function($){
 		$('html').addClass('js');
 		$('.grid li:nth-child(4n+4)').addClass('last');
-		
 		$('.prd').click(function(e){
 			e.preventDefault();
 		})
@@ -14,15 +13,18 @@ var noLimits = {
 			e.preventDefault();
 			var thisbtn = $(this);
 			var 	hidetxt = 'HIDE DETAILS',
-					showtxt = 'VIEW DETAILS';
+					showtxt = 'VIEW DETAILS',
+					description = $('#description');
 			
 			if ( thisbtn.text() == showtxt ){
-				$('#description').slideDown();
+				description.slideDown();
 				thisbtn.text(hidetxt);
+				//description.next().css('paddingTop','0px')
 				
 			}else{
-				$('#description').slideUp();
+				description.slideUp();
 				thisbtn.text(showtxt);
+				//description.next().css('paddingTop','36px')
 			}
 		
 		})

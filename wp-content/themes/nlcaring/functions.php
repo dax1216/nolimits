@@ -31,6 +31,7 @@
 /*-----------------------------------------------------------------------------------*/
     require_once(get_template_directory() . '/framework/functions/contact_form_handler.php');
     require_once(get_template_directory() . '/framework/functions/theme_comment.php');
+    require_once(get_template_directory() . '/vendor/comment-images/comment-image.php');
 
 /*-----------------------------------------------------------------------------------*/
 // Generate Hirarchical Options
@@ -398,7 +399,7 @@ if( !function_exists( 'theme_pagination' ) ){
 add_action( 'comment_form_after', 'tinyMCE_comment_form' );
 function tinyMCE_comment_form() {
 ?>
-    <script type="text/javascript" src="<?php echo includes_url( 'js/tinymce/tiny_mce.js' ); ?>"></script>;
+    <script type="text/javascript" src="<?php echo includes_url( 'js/tinymce/tiny_mce.js' ); ?>"></script>
     <script type="text/javascript">
         tinyMCE.init({
             theme : "advanced",
@@ -584,7 +585,7 @@ function templateUrl_func( $atts,  $content = null ) {
 }
 add_shortcode( 'templateUrl', 'templateUrl_func' );
 
-function groupmatrix_widgets_init() {
+function nolimits_widgets_init() {
 
 	register_sidebar( array(
 		'name'          => __( 'Primary Sidebar', 'groupmatrix' ),
@@ -598,7 +599,7 @@ function groupmatrix_widgets_init() {
 	
 	
 }
-add_action( 'widgets_init', 'groupmatrix_widgets_init' );
+add_action( 'widgets_init', 'nolimits_widgets_init' );
 
 function help_field_value($key=NULL)
 {
@@ -614,3 +615,138 @@ function help_status(){
 		return get_post_meta($post->ID, 'NO_LIMIT_help_status', true); 
 	
 }
+
+function help_badge($size=NULL){
+		global $post;
+		$caring_badge = get_post_meta( $post->ID,'NO_LIMIT_caring_badge',true);  
+		
+		if(isset($size)){
+			$caring_badge=wp_get_attachment_image_src( $caring_badge, $size );
+			if(  isset($caring_badge[0])  ){
+				echo '<img class="badge" width="137" src="'.$caring_badge[0].'" />';						
+			}else{
+				echo '<img  class="badge" width="137" src="'.get_template_directory_uri().'/contents/images/badge-big.png" />';						
+			}
+		
+		}else{
+			$caring_badge=wp_get_attachment_image_src( $caring_badge, 'full' );
+			if(  isset($caring_badge[0])  ){
+				echo '<img class="badge" width="30" src="'.$caring_badge[0].'" />';						
+			}else{
+				echo '<img  class="badge" width="30" src="'.get_template_directory_uri().'/contents/images/badge-default.png" />';		
+			}
+		}
+			
+}
+
+function help_location(){
+		global $post;
+		echo get_post_meta($post->ID, 'NO_LIMIT_caring_address', true);
+}
+
+function help_thumbnail(){
+		global $post;
+		if( has_post_thumbnail( $post->ID ) ){
+			echo get_the_post_thumbnail( $post->ID, 'default_help', array( 'class'=>'help_thumb') );
+		}else{
+			echo '<img width="220" height="157" src="'.get_template_directory_uri().'/contents/images/default.jpg" />';
+		}
+}
+
+function help_instruction(){
+		global $post;
+		$instructions = get_post_meta( $post->ID,'NO_LIMIT_instruction',true);  
+		if(!empty($instructions)){
+			echo $instructions;
+		}
+}
+
+function help_gallery($name=NULL){ 
+	global $post;
+	$thumbnail_big = 'gallery_image';
+	$thumbnail_small = 'thumbnail';
+	if(isset($name)){
+	?>
+	<section class="slider">						
+		<div id="slider" class="flexslider">								
+		  <ul class="slides">
+				<?php 
+				
+				$gallery_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_big, $post->ID );
+				$thumb_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_small, $post->ID );										
+				if(!empty($gallery_images)) { 
+					 foreach( $gallery_images as $prop_image_id=>$prop_image_meta ){
+						echo '<li><img src="'.$prop_image_meta['url'].'" alt="'.$prop_image_meta['title'].'" /><span class="cover">&nbsp;</span></li>';
+					}						
+				}else{
+					 if( has_post_thumbnail( $post->ID ) ){ /*Set featured image if no gallery*/										
+						echo '<li>'.get_the_post_thumbnail( $post->ID, 'thumbnail_big' ).'<span class="cover">&nbsp;</span></li>';
+					}else{ /* if no all, Set Default Image*/
+						echo '<li><img width="335" height="222" src="'.get_template_directory_uri().'/contents/images/default.jpg"></li>';
+					}
+				}										
+				?>
+		  </ul>
+		</div>
+		<div id="carousel" class="flexslider">
+		  <ul class="slides">
+			<?php 						
+				 foreach( $thumb_images as $prop_image_id=>$prop_image_meta ){
+					echo '<li><img src="'.$prop_image_meta['url'].'" alt="'.$prop_image_meta['title'].'" /><span class="cover">&nbsp;</span></li></li>';
+				}						
+			?>
+		  </ul>
+		</div>					
+	</section>	
+<?php } else{ ?>
+		<section class="slider big">						
+			<div id="slider" class="flexslider">								
+			  <ul class="slides big">
+					<?php 
+					$gallery_images = rwmb_meta( 'NO_LIMIT_caring_images', 'type=plupload_image&size='.$thumbnail_big, $post->ID );
+					$thumb_images = rwmb_meta( 'NO_LIMIT_caring_images', 'type=plupload_image&size='.$thumbnail_small, $post->ID );										
+					if(!empty($gallery_images)) { 
+						 foreach( $gallery_images as $prop_image_id=>$prop_image_meta ){
+							echo '<li><img src="'.$prop_image_meta['url'].'" alt="'.$prop_image_meta['title'].'" /><span class="cover">&nbsp;</span></li>';
+						}						
+					}else{
+						 if( has_post_thumbnail( $post->ID ) ){ /*Set featured image if no gallery*/										
+							echo '<li>'.get_the_post_thumbnail( $post->ID, 'thumbnail_big' ).'<span class="cover">&nbsp;</span></li>';
+						}else{ /* if no all, Set Default Image*/
+							echo '<li><img width="335" height="222" src="'.get_template_directory_uri().'/contents/images/default.jpg"></li>';
+						}
+					}										
+					?>
+			  </ul>
+			</div>
+			<div id="carousel" class="flexslider">
+			  <ul class="slides">
+				<?php 						
+					 foreach( $thumb_images as $prop_image_id=>$prop_image_meta ){
+						echo '<li><img src="'.$prop_image_meta['url'].'" alt="'.$prop_image_meta['title'].'" /><span class="cover">&nbsp;</span></li></li>';
+					}						
+				?>
+			  </ul>
+			</div>					
+		</section>	
+<?php 
+	}
+}
+
+function help_slogan(){ ?>
+	<div class="helpSlogan">
+		<?php
+			global $post;
+			$slogan = get_post_meta( $post->ID,'NO_LIMIT_caring_slogan',true); 
+			$sloganTxt = get_post_meta( $post->ID,'NO_LIMIT_caring_slogan_text',true); 
+			if(!empty($slogan)){
+				echo '<h2>'.$slogan.'</h2>';
+			}
+			if(!empty($sloganTxt)){
+				echo '<div class="sloganTxt">'.$sloganTxt.'</div>';
+			}
+		?>
+		<p class="version">Version No.: 4</p>
+	</div>
+
+<?php }

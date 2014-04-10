@@ -376,7 +376,7 @@ get_header();
 												<?php
 												$content = '';
 												$editor_id = 'description';
-												$settings = array( 'quicktags'=>FALSE, 'teeny'=>TRUE, 'media_buttons'=>FALSE,'editor_class'=>'customTinyMCE','textarea_rows'=> get_option('default_post_edit_rows', 5));
+												$settings = array( 'quicktags'=>FALSE, 'teeny'=>TRUE, 'media_buttons'=>FALSE,'editor_class'=>'customTinyMCE','textarea_rows'=> get_option('default_post_edit_rows', 8));
 
 												wp_editor( $content, $editor_id, $settings );
 
@@ -388,7 +388,7 @@ get_header();
 												<?php
 												$content = '';
 												$editor_id = 'instruction';
-												$settings = array( 'quicktags'=>FALSE, 'teeny'=>TRUE, 'media_buttons'=>FALSE,'editor_class'=>'customTinyMCE','textarea_rows'=> get_option('default_post_edit_rows', 5));
+												$settings = array( 'quicktags'=>FALSE, 'teeny'=>TRUE, 'media_buttons'=>FALSE,'editor_class'=>'customTinyMCE','textarea_rows'=> get_option('default_post_edit_rows', 8));
 												wp_editor( $content, $editor_id, $settings );
 
 												?>
