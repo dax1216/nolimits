@@ -12,17 +12,14 @@
  */
 
 get_header(); ?>
-
-<div id="main-content" class="main-content">
-
-<?php
-	if ( is_front_page() && twentyfourteen_has_featured_posts() ) {
-		// Include the featured content template.
-		get_template_part( 'featured-content' );
-	}
-?>
-	<div id="primary" class="content-area">
-		<div id="content" class="site-content" role="main">
+<div id="pageBody">
+		<div class="section-heading main">
+			<div class="wrapper">
+				<h1 class="page-title">CALL TO HELP</h1>
+			</div>
+		</div>
+		<section class="wrapper">
+			<div class="callToHelp">
 
 			<?php
 				// Start the Loop.
@@ -38,11 +35,10 @@ get_header(); ?>
 				endwhile;
 			?>
 
-		</div><!-- #content -->
-	</div><!-- #primary -->
-	<?php get_sidebar( 'content' ); ?>
-</div><!-- #main-content -->
-
+		</div><!-- #content -->	
+			<div class="clearfix"></div>
+			</div>
+		</section>
+	</div>	
 <?php
-get_sidebar();
 get_footer();

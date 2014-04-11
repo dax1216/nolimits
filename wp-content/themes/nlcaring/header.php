@@ -39,14 +39,10 @@
 				<?php endif;?>
 			</div>
 			<nav id="topNav">
-				<ul class="menu">
-					<li class="current-menu-item"><a href="#">Home</a></li>
-					<li><a href="calltohelp.html">Call to help</a></li>
-					<li><a href="#">Hero</a></li>
-					<li><a href="#">Products</a></li>
-					<li><a href="#">User profile</a></li>
-					<li><a href="#">About us</a></li>
-				</ul>
+				<?php wp_nav_menu(array(
+					'theme_location'=>'main_nav',
+					'container'=>false
+				));?>
 			</nav>
 			<div class="clearfix"></div>
 		</header>

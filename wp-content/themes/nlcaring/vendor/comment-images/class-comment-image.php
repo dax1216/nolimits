@@ -357,8 +357,28 @@ class Comment_Image {
 	 * @param	$post_id	The ID of the post on which the comment is being added.
 	 */
  	function add_image_upload_form( $post_id ) {
+		global $post;
+			if ($_FILES) {
+				$files = $_FILES['upload_attachment'];
+				foreach ($files['name'] as $key => $value) {
+					if ($files['name'][$key]) {
+						$file = array(
+						'name'     => $files['name'][$key],
+						'type'     => $files['type'][$key],
+						'tmp_name' => $files['tmp_name'][$key],
+						'error'    => $files['error'][$key],
+						'size'     => $files['size'][$key]
+						);
 
-	 	// Create the label and the input field for uploading an image
+						$_FILES = array("upload_attachment" => $file);
+
+						foreach ($_FILES as $file => $array) {
+							$newupload = wp_insert_attachment($file,$post->ID);
+						}                                   
+					}
+				}
+			}
+					// Create the label and the input field for uploading an image
 	 	if ( 'enabled' == get_option( 'comment_image_toggle_state' ) || 'enable' == get_post_meta( $post_id, 'comment_images_toggle', true ) ) {
 
 		 	$html = '<div id="comment-image-wrapper">';
@@ -369,11 +389,11 @@ class Comment_Image {
 				 	$html .= __( 'Select an image for your comment (GIF, PNG, JPG, JPEG):', 'comment-images' );
 				 $html .= "</label>";
 				 $html .= "<input type='file' name='comment_image_$post_id' id='comment_image' />";
-
+				//$html .= '<input type="file" multiple=multiple name="upload_attachment[]">';
 			 $html .= '</div><!-- #comment-image-wrapper -->';
 
 			 echo $html;
-
+			
 		 } // end if
 
 	} // end add_image_upload_form

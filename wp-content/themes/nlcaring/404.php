@@ -9,9 +9,14 @@
 
 get_header(); ?>
 
-
-	<div id="primary" class="content-area">
-		<div id="content" class="site-content" role="main">
+<div id="pageBody">
+		<div class="section-heading main">
+			<div class="wrapper">
+				<h1 class="page-title">Error: 404</h1>
+			</div>
+		</div>
+		<section class="wrapper">
+			<div class="callToHelp">
 
 			<header class="page-header">
 				<h1 class="page-title"><?php _e( 'Not Found', 'twentyfourteen' ); ?></h1>
@@ -22,11 +27,9 @@ get_header(); ?>
 
 				<?php get_search_form(); ?>
 			</div><!-- .page-content -->
-
-		</div><!-- #content -->
-	</div><!-- #primary -->
+	</div>
+		</section>
+	</div>	
 
 <?php
-get_sidebar( 'content' );
-get_sidebar();
 get_footer();

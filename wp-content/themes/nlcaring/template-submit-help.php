@@ -49,7 +49,7 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
             if( $help_id > 0 ){
 
 				// Set Default Status
-                 update_post_meta($help_id, $prefix.'help_status','Call to help');
+                 update_post_meta($help_id, $prefix.'help_status','Call to Help');
                 
                
                 // Attach Address Post Meta
