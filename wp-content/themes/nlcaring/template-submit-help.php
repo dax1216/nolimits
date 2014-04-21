@@ -18,7 +18,7 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
             $new_help = array(
                 'post_type'	    =>	'caring'
             );
-
+			
             // Assign Title and Description
             $new_help['post_title']	= sanitize_text_field($_POST['title']);
             $new_help['post_content'] = $_POST['description'];
@@ -27,7 +27,6 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
             global $current_user;
             get_currentuserinfo();
             $new_help['post_author'] = $current_user->ID;
-
 
             /* check the type of action */
             $action = $_POST['action'];
@@ -78,6 +77,27 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
                     update_post_meta($help_id, $prefix.'video_url', $_POST['video_url']);
                 }
 				
+					// Attach instruction Post Meta
+                if(isset($_POST['txtnum'])){
+                    update_post_meta($help_id, $prefix.'txtnum', $_POST['txtnum']);
+                }
+				
+				// Attach instruction Post Meta
+				for($inum = 0; $inum < $_POST['txtnum']; $inum++) {
+					
+					if(isset($_POST['pname_'.$inum])){
+						update_post_meta($help_id, $prefix.'pname_'.$inum, $_POST['pname_'.$inum]);
+					}		
+					if(isset($_POST['pmanuf_'.$inum])){
+						update_post_meta($help_id, $prefix.'pmanuf_'.$inum, $_POST['pmanuf_'.$inum]);
+					}				
+					if(isset($_POST['pprice_'.$inum])){
+						update_post_meta($help_id, $prefix.'pprice_'.$inum, $_POST['pprice_'.$inum]);
+					}				
+					if(isset($_POST['plink_'.$inum])){
+						update_post_meta($help_id, $prefix.'plink_'.$inum, $_POST['plink_'.$inum]);
+					}		
+				}
 				
 
                 /* Upload Images */
@@ -105,6 +125,35 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
                         }
                     }
                 }
+				
+				//upload document file
+				if(!empty($_FILES['document_file'])) {
+					$file   = $_FILES['document_file'];
+					$upload = wp_handle_upload($file, array('form_help' => false));
+					if(!isset($upload['error']) && isset($upload['file'])) {
+						$filetype   = wp_check_filetype(basename($upload['file']), null);
+						$title      = $file['name'];
+						$ext        = strrchr($title, '.');
+						$title      = ($ext !== false) ? substr($title, 0, -strlen($ext)) : $title;
+						$attachment = array(
+							'post_mime_type'    => $wp_filetype['type'],
+							'post_title'        => addslashes($title),
+							'post_content'      => '',
+							'post_status'       => 'inherit',
+							'post_parent'       => $help_id
+						);
+
+						$attach_key = 'document_file_id';
+						$attach_id  = wp_insert_attachment($attachment, $upload['file']);
+						$existing_download = (int) get_post_meta($help_id, $attach_key, true);
+
+						if(is_numeric($existing_download)) {
+							wp_delete_attachment($existing_download);
+						}
+
+						update_post_meta($help_id, $attach_key, $attach_id);
+					}
+				}
 
                 /* Send Email Notice on Call to help Submit */
                 $action = $_POST['action'];
@@ -146,7 +195,59 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
 
 get_header();
 ?>
-
+<!-- This is for the adding of textboxes -->
+<script type="text/javascript">
+	jQuery(document).ready(function(){	
+		jQuery('#add_requirement').click(function(evt){
+			evt.preventDefault();
+			txtnum = jQuery('#txtnum').val();
+			
+			jQuery('#tbodyproject').append('<tr class="trproj_'+txtnum+'"><td><input id="pname_'+txtnum+'" name="pname_'+txtnum+'" type="text" class="" title="" value="" /></td><td><input id="pmanuf_'+txtnum+'" name="pmanuf_'+txtnum+'" type="text" class="" title="" value="" /></td><td class="price"><input id="pprice_'+txtnum+'" name="pprice_'+txtnum+'" type="text" class="" title="" value="" /></td><td><input id="plink_'+txtnum+'" name="plink_'+txtnum+'" type="text" class="" title="" value="" /></td><td><a id="apr_'+txtnum+'"  class="del_proj" rel="trproj_'+txtnum+'" href="#">Delete</a></td></tr>');
+			
+			txtnum++;
+			jQuery('#txtnum').val(txtnum);
+			
+		});
+		
+		jQuery('#tbodyproject').on('click', '.del_proj', function(evt){
+			evt.preventDefault();
+			
+			rel = jQuery(this).attr('rel');
+			jQuery('.'+rel).remove();
+			
+			txtnum = jQuery('#txtnum').val();
+			rel_val = rel.substring(7, rel.length);
+			
+			for(i_rel = rel_val; i_rel < txtnum; i_rel++) {
+				i_rel = parseInt(i_rel);
+				
+				//change the anchor tag delete rel name
+				jQuery('.trproj_'+(i_rel+1)+' td #apr_'+(i_rel+1)).attr('rel','trproj_'+i_rel);
+				jQuery('.trproj_'+(i_rel+1)+' td #apr_'+(i_rel+1)).attr('id','apr_'+i_rel);
+				//change plink
+				jQuery('.trproj_'+(i_rel+1)+' td #plink_'+(i_rel+1)).attr('name','plink_'+i_rel);
+				jQuery('.trproj_'+(i_rel+1)+' td #plink_'+(i_rel+1)).attr('id','plink_'+i_rel);
+				//change pprice
+				jQuery('.trproj_'+(i_rel+1)+' td #pprice_'+(i_rel+1)).attr('name','pprice_'+i_rel);
+				jQuery('.trproj_'+(i_rel+1)+' td #pprice_'+(i_rel+1)).attr('id','pprice_'+i_rel);
+				//change pmanuf
+				jQuery('.trproj_'+(i_rel+1)+' td #pmanuf_'+(i_rel+1)).attr('name','pmanuf_'+i_rel);
+				jQuery('.trproj_'+(i_rel+1)+' td #pmanuf_'+(i_rel+1)).attr('id','pmanuf_'+i_rel);
+				//change pname
+				jQuery('.trproj_'+(i_rel+1)+' td #pname_'+(i_rel+1)).attr('name','pname_'+i_rel);
+				jQuery('.trproj_'+(i_rel+1)+' td #pname_'+(i_rel+1)).attr('id','pname_'+i_rel);
+				//change trproj
+				jQuery('.trproj_'+(i_rel+1)).attr('class','trproj_'+i_rel);
+			}
+			
+			txtnum = parseInt(txtnum);
+			if(txtnum != 0) {
+				jQuery('#txtnum').val(txtnum-1);
+			}
+		});
+		
+	});
+</script>
 
     <!-- pageBody -->
 	<div id="pageBody">
@@ -199,6 +300,7 @@ get_header();
                                             /* check if current logged in user is the author of help */
                                             if( $target_help->post_author == $current_user->ID ){
 
+											
                                                 $post_meta_data = get_post_custom( $target_help->ID );
                                                 ?>
                                                 <form id="submit-help-form" class="submit-form" enctype="multipart/form-data" method="post">
@@ -329,7 +431,96 @@ get_header();
                                                             <?php _e('Provide images for gallery on help detail page. Images should have minimum width of 770px and minimum height of 386px. ( Bigger images will be cropped automatically )','framework'); ?>
                                                         </div>
                                                     </div>
-
+													<div class="form-option">
+                                                        <label><?php _e('Files','framework'); ?></label>
+														<div class="clearfix">
+															<?php
+																$download_id    = get_post_meta($target_help->ID, 'document_file_id', true);
+																if(!empty($download_id) && $download_id != '0') {
+																	echo '<p><a href="' . wp_get_attachment_url($download_id) . '">
+																		View document</a></p>';
+																} else {
+																	echo 'Empty files.';
+																}
+															?>
+														</div>
+                                                        <div id="" class="clearfix">
+                                                            <label for="document_file">Upload document:</label>
+															<input type="file" name="document_file" id="document_file" />
+                                                        </div>
+													</div>
+													<div class="form-option">
+														<label><?php _e('Project Requirement', 'framework'); ?></label>
+														<div class="field-description">
+															<?php _e( 'This project requires thte purchase of non printable items:', 'framework'); ?>
+														</div>
+														<br/>
+														<?php  if(isset($post_meta_data[$prefix.'txtnum'][0])): ?>
+															<input id="txtnum" name="txtnum" type="hidden" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'txtnum'] ) ){ echo $post_meta_data[$prefix.'txtnum'][0]; } ?>" />
+														 <?php else: ?>
+															<input id="txtnum" name="txtnum" type="hidden" class="" title="" value="1" />
+														<?php endif; ?>
+														<table width="100%" style="text-align:left;">
+															<thead>
+																<tr>
+																	<th>Name:</th>
+																	<th>Manufacturer:</th>
+																	<th>Price:</th>
+																	<th>Link:</th>
+																	<th></th>
+																</tr>
+															</thead>
+															<tbody id="tbodyproject">
+																<?php  if(empty($post_meta_data[$prefix.'txtnum'][0]) or $post_meta_data[$prefix.'txtnum'][0] == '1') { ?>
+																	<tr class="trproj_0">
+																		<td>
+																			<input id="pname_0" name="pname_0" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'pname_0'] ) ){ echo $post_meta_data[$prefix.'pname_0'][0]; } ?>" />
+																		</td>
+																		<td>
+																			<input id="pmanuf_0" name="pmanuf_0" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'pmanuf_0'] ) ){ echo $post_meta_data[$prefix.'pmanuf_0'][0]; } ?>" />
+																		</td>
+																		<td class="price">
+																			<input id="pprice_0" name="pprice_0" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'pprice_0'] ) ){ echo $post_meta_data[$prefix.'pprice_0'][0]; } ?>" />
+																		</td>
+																		<td>
+																			<input id="plink_0" name="plink_0" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'plink_0'] ) ){ echo $post_meta_data[$prefix.'plink_0'][0]; } ?>" />
+																		</td>
+																		<td>
+																			<a id="apr_0" class="del_proj" rel="trproj_0" href="#">Delete</a>
+																		</td>
+																	</tr>
+																	<?php 
+																		}else{
+																			for($inum_data = 0; $inum_data < $post_meta_data[$prefix.'txtnum'][0]; $inum_data++) {
+																	?>
+																				<tr class="trproj_<?php echo $inum_data; ?>">
+																					<td>
+																						<input id="pname_<?php echo $inum_data; ?>" name="pname_<?php echo $inum_data; ?>" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'pname_'.$inum_data] ) ){ echo $post_meta_data[$prefix.'pname_'.$inum_data][0]; } ?>" />
+																					</td>
+																					<td>
+																						<input id="pmanuf_<?php echo $inum_data; ?>" name="pmanuf_<?php echo $inum_data; ?>" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'pmanuf_'.$inum_data] ) ){ echo $post_meta_data[$prefix.'pmanuf_'.$inum_data][0]; } ?>" />
+																					</td>
+																					<td class="price">
+																						<input id="pprice_<?php echo $inum_data; ?>" name="pprice_<?php echo $inum_data; ?>" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'pprice_'.$inum_data] ) ){ echo $post_meta_data[$prefix.'pprice_'.$inum_data][0]; } ?>" />
+																					</td>
+																					<td>
+																						<input id="plink_<?php echo $inum_data; ?>" name="plink_<?php echo $inum_data; ?>" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'plink_'.$inum_data] ) ){ echo $post_meta_data[$prefix.'plink_'.$inum_data][0]; } ?>" />
+																					</td>
+																					<td>
+																						<a id="apr_<?php echo $inum_data; ?>" class="del_proj" rel="trproj_<?php echo $inum_data; ?>" href="#">Delete</a>
+																					</td>
+																				</tr>
+																	<?php
+																			}
+																		}
+																	?>
+																	
+															</tbody>
+														</table>
+														<br/>
+														<button id="add_requirement" class="real-btn"><?php _e('Add Requirement','framework'); ?></button>
+													</div>
+													<br/>
                                                     <div class="form-option">
                                                         <?php wp_nonce_field( 'submit_help', 'caring_nonce' ); ?>
                                                         <input type="hidden" name="action" value="update_help"/>
@@ -450,7 +641,7 @@ get_header();
                                                     <?php _e('Provide images for gallery on call to help detail page. Images should have minimum width of 770px and minimum height of 386px. ( Bigger images will be cropped automatically )','framework'); ?>
                                                 </div>
                                             </div>
-
+											
                                             <div class="form-option">
                                                 <?php wp_nonce_field( 'submit_help', 'caring_nonce' ); ?>
                                                 <input type="hidden" name="action" value="add_help"/>

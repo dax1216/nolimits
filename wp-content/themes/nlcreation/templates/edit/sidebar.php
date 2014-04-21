@@ -1,6 +1,6 @@
 
 <div class="update-button-wrap">
-    <input type="submit" name="update_product" class="btn btn-theme btn-lg btn-block" value="<?php esc_attr_e( 'Update Product', 'dokan' ); ?>"/>
+    <input type="submit" name="update_product" class="btn btn-theme btn-lg btn-block" value="<?php esc_attr_e( 'Update Thing', 'dokan' ); ?>"/>
 </div>
 
 <div class="toggle-sidebar-container">
@@ -33,7 +33,7 @@
         <?php } ?>
     </div>
 
-    <div class="product-type dokan-toggle-sidebar">
+    <!--div class="product-type dokan-toggle-sidebar">
         <label for="product_type"><?php _e( 'Product Type:', 'dokan' ); ?></label>
 
         <?php
@@ -62,7 +62,7 @@
                 <a class="dokan-toggle-cacnel" href="#"><?php _e( 'Cancel', 'dokan' ); ?></a>
             </div> <!-- #dokan-toggle-select -->
 
-    </div> <!-- .product-type -->
+    </div--> <!-- .product-type -->
 </div>
 
 <?php do_action( 'dokan_product_edit_before_sidebar' ); ?>
@@ -86,7 +86,9 @@
                                 <a href="#" class="insert-file-row btn btn-sm btn-success" data-row="<?php
                                     $file = array(
                                         'file' => '',
-                                        'name' => ''
+                                        'name' => '',
+										'size'=>'',
+										
                                     );
                                     ob_start();
                                     include DOKAN_INC_DIR . '/woo-views/html-product-download.php';

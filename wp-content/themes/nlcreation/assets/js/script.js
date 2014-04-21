@@ -35,12 +35,16 @@ jQuery(function($) {
     function getGridSize() {
         return (window.innerWidth < 600) ? 2 : (window.innerWidth < 900) ? 3 : 4;
     }
+	
 
+	
+
+	
     $('.product-sliders').flexslider({
         animation: "slide",
         animationLoop: false,
-        itemWidth: 190,
-        itemMargin: 10,
+        itemWidth: 220,
+        itemMargin: 20,
         controlNav: false,
         minItems: getGridSize(),
         maxItems: getGridSize()

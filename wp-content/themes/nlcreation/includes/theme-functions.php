@@ -432,11 +432,12 @@ function dokan_post_input_box( $post_id, $meta_key, $attr = array(), $type = 'te
     $name = isset( $attr['name'] ) ? esc_attr( $attr['name'] ) : $meta_key;
     $value = isset( $attr['value'] ) ? $attr['value'] : get_post_meta( $post_id, $meta_key, true );
     $size = isset( $attr['size'] ) ? $attr['size'] : 30;
+	$disabled = isset($attr['disabled']) ? 'disabled' : '';
 
     switch ($type) {
         case 'text':
             ?>
-            <input type="text" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="<?php echo esc_attr( $value ); ?>" class="<?php echo $class; ?>" placeholder="<?php echo $placeholder; ?>">
+            <input type="text" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="<?php echo esc_attr( $value ); ?>" class="<?php echo $class; ?>" placeholder="<?php echo $placeholder; ?>"  <?php echo $disabled ?>>
             <?php
             break;
 

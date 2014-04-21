@@ -298,7 +298,7 @@ function dokan_get_dashboard_nav() {
             'url' => dokan_get_page_url( 'dashboard' )
         ),
         'product' => array(
-            'title' => __( 'Products', 'dokan'),
+            'title' => __( 'Things', 'dokan'),
             'icon' => '<i class="icon-briefcase"></i>',
             'url' => dokan_get_page_url( 'products' )
         ),

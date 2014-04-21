@@ -1,6 +1,23 @@
+<?php
+	$prefix = 'NO_LIMIT_';
+?>
 <a href="#inline" class="btn-hero fancybox"></a>							
 <div id="inline" style="display:none;width:800px;">
 	<div class="popupBody">
+		<?php 
+			if(is_user_logged_in()){
+
+				// Get User Id
+				global $current_user;
+				get_currentuserinfo();
+
+				$post_id = get_the_ID();
+				$post_meta_data = get_post_custom($post_id);
+				
+				$caring_badge = get_post_meta( $post_id, $prefix.'caring_badge',true);  
+				$caring_badge=wp_get_attachment_image_src( $caring_badge, 'full' );
+			   
+		?>
 		<div class="popTop">
 			<div class="hRally">
 				<img src="<?php echo get_template_directory_uri(); ?>/contents/images/pop-heart.png" />
@@ -11,7 +28,7 @@
 			</div>
 			<div class="hBadge">
 				<div class="headerBadge">
-					<div class="popBadge"><img class="popBadge" src="<?php echo get_template_directory_uri(); ?>/contents/images/pop-badge.png" /></div>
+					<div class="popBadge"><img class="popBadge" src="<?php echo $caring_badge[0];?>" /></div>
 					<div class="heroText">
 						<img src="<?php echo get_template_directory_uri(); ?>/contents/images/you-are-a-hero.png" />
 						<h4>Super Shoe Badge</h4>
@@ -27,25 +44,19 @@
 							<th>Price:</th>
 							<th></th>
 						</tr>
-						<tr>
-							<td>Copper Springs</td>
-							<td>Aztec Solutions</td>
-							<td class="price">$3.95</td>
-							<td><a href="#">Take me there</a></td>
-						</tr>
-						<tr>
-							<td>Soft gel shoe insert</td>
-							<td>Shoeis</td>
-							<td class="price">$8.42</td>
-							<td><a href="#">Take me there</a></td>
-						</tr>
-						<tr>
-							<td>Laces</td>
-							<td>Shoel Lace Express</td>
-							<td class="price">$2.14</td>
-							<td><a href="#">Take me there</a></td>
-						</tr>
-					</table>
+							<?php
+								for($inum_data = 0; $inum_data < $post_meta_data[$prefix.'txtnum'][0]; $inum_data++) {
+							?>
+								<tr>
+									<td><?php echo $post_meta_data[$prefix.'pname_'.$inum_data][0]; ?></td>
+									<td><?php echo $post_meta_data[$prefix.'pmanuf_'.$inum_data][0]; ?></td>
+									<td class="price"><?php echo $post_meta_data[$prefix.'pprice_'.$inum_data][0]; ?></td>
+									<td><a href="<?php echo $post_meta_data[$prefix.'plink_'.$inum_data][0]; ?>" target="_blank">Take me there</a></td>
+								</tr>
+							<?php
+								}
+							?>
+						</table>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -77,6 +88,15 @@
 				<p align="center"><a href="#" class="nl-btn red large"><img src="<?php echo get_template_directory_uri(); ?>/images/ico-download.png" /> &nbsp; Download and Print!</a></p>
 			</div>
 			<div class="clearfix"></div>
-		</div><!--popTop-->									
+		</div><!--popTop-->
+		<?php 
+			}else{
+				?>
+				<div class="alert-wrapper">
+					<h5><?php _e('Please, Log in to view your hero rally!', 'framework') ?></h5>
+				</div>
+				<?php
+			}
+		?>	
 	</div>
 </div>

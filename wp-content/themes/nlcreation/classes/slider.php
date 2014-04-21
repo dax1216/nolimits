@@ -20,6 +20,7 @@ class Dokan_Slider {
         'slide_image' => '',
         'slide_video' => '',
         'slide_link' => '',
+		'slide_more_text'=>'',
         'slide_link_open' => '_self'
     );
 
@@ -381,7 +382,7 @@ class Dokan_Slider {
                     <tr>
                         <td><?php _e( 'Read More Text', 'dokan' ); ?></td>
                         <td>
-                            <input type="text" class="regular-text" value="<?php echo esc_url( $slide_more_text ); ?>" placeholder="Read More" name="slide_more_text[]" />
+                            <input type="text" class="regular-text" value="<?php echo esc_attr( $slide_more_text ); ?>" placeholder="Read More" name="slide_more_text[]" />
                         </td>
                     </tr>
 					<tr>

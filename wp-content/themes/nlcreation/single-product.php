@@ -9,9 +9,9 @@
 get_header();
 ?>
 
-<?php get_sidebar( 'product-single' ); ?>
+<?php //get_sidebar( 'product-single' ); ?>
 
-<div id="primary" class="content-area col-md-9">
+<div id="primary" class="content-area col-md-12">
     <div id="content" class="site-content" role="main">
 
 	<?php

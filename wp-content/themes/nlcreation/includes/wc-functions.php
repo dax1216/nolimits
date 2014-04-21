@@ -452,17 +452,24 @@ function dokan_process_product_meta( $post_id ) {
     $is_virtual         = isset( $_POST['_virtual'] ) ? 'yes' : 'no';
 
     // Product type + Downloadable/Virtual
-    wp_set_object_terms( $post_id, $product_type, 'product_type' );
+   // wp_set_object_terms( $post_id, $product_type, 'product_type' );
     update_post_meta( $post_id, '_downloadable', $is_downloadable );
     update_post_meta( $post_id, '_virtual', $is_virtual );
+	
+	//Instructions
+	
+	$instruction = $_POST['post_content_instruction'];
+    update_post_meta( $post_id, 'creation_instruction', $instruction );
+	
+	
 
     // Gallery Images
     $attachment_ids = array_filter( explode( ',', woocommerce_clean( $_POST['product_image_gallery'] ) ) );
     update_post_meta( $post_id, '_product_image_gallery', implode( ',', $attachment_ids ) );
 
     // Update post meta
-    update_post_meta( $post_id, '_regular_price', stripslashes( $_POST['_regular_price'] ) );
-    update_post_meta( $post_id, '_sale_price', stripslashes( $_POST['_sale_price'] ) );
+   // update_post_meta( $post_id, '_regular_price', stripslashes( $_POST['_regular_price'] ) );
+ //   update_post_meta( $post_id, '_sale_price', stripslashes( $_POST['_sale_price'] ) );
 
     if ( isset( $_POST['_tax_status'] ) )
         update_post_meta( $post_id, '_tax_status', stripslashes( $_POST['_tax_status'] ) );
@@ -474,7 +481,7 @@ function dokan_process_product_meta( $post_id ) {
     update_post_meta( $post_id, '_purchase_note', stripslashes( $_POST['_purchase_note'] ) );
 
     // Dimensions
-    if ( $is_virtual == 'no' ) {
+  /*  if ( $is_virtual == 'no' ) {
         update_post_meta( $post_id, '_weight', stripslashes( $_POST['_weight'] ) );
         update_post_meta( $post_id, '_length', stripslashes( $_POST['_length'] ) );
         update_post_meta( $post_id, '_width', stripslashes( $_POST['_width'] ) );
@@ -484,11 +491,12 @@ function dokan_process_product_meta( $post_id ) {
         update_post_meta( $post_id, '_length', '' );
         update_post_meta( $post_id, '_width', '' );
         update_post_meta( $post_id, '_height', '' );
-    }
+    } 
+	*/
 
     // Save shipping class
-    $product_shipping_class = $_POST['product_shipping_class'] > 0 && $product_type != 'external' ? absint( $_POST['product_shipping_class'] ) : '';
-    wp_set_object_terms( $post_id, $product_shipping_class, 'product_shipping_class');
+ //   $product_shipping_class = $_POST['product_shipping_class'] > 0 && $product_type != 'external' ? absint( $_POST['product_shipping_class'] ) : '';
+  //  wp_set_object_terms( $post_id, $product_shipping_class, 'product_shipping_class');
 
     // Unique SKU
     $sku                = get_post_meta($post_id, '_sku', true);
@@ -517,7 +525,7 @@ function dokan_process_product_meta( $post_id ) {
     }
 
     // Save Attributes
-    $attributes = array();
+   /* $attributes = array();
 
     if ( isset( $_POST['attribute_names'] ) ) {
         $attribute_names = $_POST['attribute_names'];
@@ -595,9 +603,9 @@ function dokan_process_product_meta( $post_id ) {
             }
 
          }
-    }
+    } */
 
-    if ( ! function_exists( 'attributes_cmp' ) ) {
+  /*  if ( ! function_exists( 'attributes_cmp' ) ) {
         function attributes_cmp( $a, $b ) {
             if ( $a['position'] == $b['position'] ) return 0;
             return ( $a['position'] < $b['position'] ) ? -1 : 1;
@@ -605,10 +613,12 @@ function dokan_process_product_meta( $post_id ) {
     }
     uasort( $attributes, 'attributes_cmp' );
 
-    update_post_meta( $post_id, '_product_attributes', $attributes );
+    update_post_meta( $post_id, '_product_attributes', $attributes ); 
 
+	*/
     // Sales and prices
-    if ( in_array( $product_type, array( 'variable' ) ) ) {
+	
+  /*  if ( in_array( $product_type, array( 'variable' ) ) ) {
 
         // Variable products have no prices
         update_post_meta( $post_id, '_regular_price', '' );
@@ -650,7 +660,7 @@ function dokan_process_product_meta( $post_id ) {
             update_post_meta( $post_id, '_sale_price_dates_from', '');
             update_post_meta( $post_id, '_sale_price_dates_to', '');
         }
-    }
+    }*/
 
     // Sold Individuall
     if ( ! empty( $_POST['_sold_individually'] ) ) {
@@ -660,7 +670,7 @@ function dokan_process_product_meta( $post_id ) {
     }
 
     // Stock Data
-    if ( get_option('woocommerce_manage_stock') == 'yes' ) {
+  /*  if ( get_option('woocommerce_manage_stock') == 'yes' ) {
 
         if ( ! empty( $_POST['_manage_stock'] ) ) {
 
@@ -688,7 +698,7 @@ function dokan_process_product_meta( $post_id ) {
 
         update_post_meta( $post_id, '_stock_status', stripslashes( $_POST['_stock_status'] ) );
 
-    }
+    } */
 
     // Upsells
     if ( isset( $_POST['upsell_ids'] ) ) {

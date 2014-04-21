@@ -60,6 +60,7 @@ function dokan_product_seller_tab( $val ) {
     $store_info = dokan_get_store_info( $author->ID );
 //    var_dump( $store_info );
     ?>
+	<h2>Maker</h2>
     <ul class="list-unstyled">
 
         <?php if ( !empty( $store_info['store_name'] ) ) { ?>
@@ -73,7 +74,7 @@ function dokan_product_seller_tab( $val ) {
 
         <li class="seller-name">
             <span>
-                <?php _e( 'Seller:', 'dokan' ); ?>
+                <?php _e( 'Maker:', 'dokan' ); ?>
             </span>
 
             <span class="details">
@@ -103,6 +104,7 @@ function dokan_product_seller_tab( $val ) {
  *
  * @global WC_Product $product
  */
+ /*
 function dokan_product_loop_price() {
     global $product;
     ?>
@@ -116,10 +118,23 @@ function dokan_product_loop_price() {
         </span>
     </span>
     <?php
+}*/
+
+//add_action( 'woocommerce_after_shop_loop_item', 'dokan_product_loop_price' );
+
+function rcdev_product_loop_excerpt() {
+    global $product;
+
+    ?>
+    <div class="item-bar">			
+		<h3><a href="<?php the_permalink(); ?>"><?php echo trimText(get_the_title(),25,'..'); ?></a></h3>
+		<p><?php echo trimText( get_the_excerpt(), 56,'[...]')  ;?></p>
+    </div>
+    <?php
 }
 
-add_action( 'woocommerce_after_shop_loop_item', 'dokan_product_loop_price' );
 
+add_action( 'woocommerce_after_shop_loop_item', 'rcdev_product_loop_excerpt' );
 
 /**
  * Filters WC breadcrumb parameters

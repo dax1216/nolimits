@@ -9,6 +9,7 @@ dokan_redirect_if_not_seller();
 $errors = array();
 $product_cat = -1;
 $post_content = __( 'Details about your product...', 'dokan' );
+$global_pirce =   dokan_get_option( 'seller_price', 'dokan_selling' ,'0.99' ) ;
 
 if ( isset( $_POST['add_product'] ) ) {
     $post_title = trim( $_POST['post_title'] );
@@ -22,9 +23,9 @@ if ( isset( $_POST['add_product'] ) ) {
         $errors[] = __( 'Please enter product title', 'dokan' );
     }
 
-    if ( !$price ) {
+    /*if ( !$price ) {
         $errors[] = __( 'Please enter product price', 'dokan' );
-    }
+    }*/
 
     if ( $product_cat < 0 ) {
         $errors[] = __( 'Please select a category', 'dokan' );
@@ -55,11 +56,18 @@ if ( isset( $_POST['add_product'] ) ) {
             /** set product category * */
             wp_set_object_terms( $product_id, (int) $_POST['product_cat'], 'product_cat' );
             wp_set_object_terms( $product_id, 'simple', 'product_type' );
-
-            update_post_meta( $product_id, '_regular_price', $price );
-            update_post_meta( $product_id, '_sale_price', '' );
-            update_post_meta( $product_id, '_price', $price );
+			
+			
+            update_post_meta( $product_id, '_regular_price', $global_pirce );
+        //   update_post_meta( $product_id, '_regular_price', $price );
+           update_post_meta( $product_id, '_sale_price', '' );
+           update_post_meta( $product_id, '_price', $global_pirce );
             update_post_meta( $product_id, '_visibility', 'visible' );
+			
+			//add instruction metat			
+			$instruction = $_POST['post_content_instruction'];
+			update_post_meta( $product_id, 'creation_instruction', $instruction );
+	
 
             do_action( 'dokan_new_product_added', $product_id, $post_data );
 
@@ -108,7 +116,7 @@ dokan_frontend_dashboard_scripts();
                             <div class="instruction-inside">
                                 <input type="hidden" name="feat_image_id" class="dokan-feat-image-id" value="0">
                                 <i class="fa fa-cloud-upload"></i>
-                                <a href="#" class="dokan-feat-image-btn btn btn-sm"><?php _e( 'Upload a product cover image', 'dokan' ); ?></a>
+                                <a href="#" class="dokan-feat-image-btn btn btn-sm"><?php _e( 'Upload a thing cover image', 'dokan' ); ?></a>
                             </div>
 
                             <div class="image-wrap dokan-hide">
@@ -117,20 +125,15 @@ dokan_frontend_dashboard_scripts();
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-7 pull-right">
                         <div class="form-group">
-                            <input class="form-control" name="post_title" id="post-title" type="text" placeholder="Product name.." value="<?php echo dokan_posted_input( 'post_title' ); ?>">
+                            <input class="form-control" name="post_title" id="post-title" type="text" placeholder="Thing name.." value="<?php echo dokan_posted_input( 'post_title' ); ?>">
                         </div>
 
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"><?php echo get_woocommerce_currency_symbol(); ?></span>
-                                <input class="form-control" name="price" id="product-price" type="text" placeholder="9.99" value="<?php echo dokan_posted_input( 'price' ); ?>">
-                            </div>
-                        </div>
+                        
 
                         <div class="form-group">
-                            <textarea name="post_excerpt" id="post-excerpt" rows="5" class="form-control" placeholder="Short description about the product..."><?php echo dokan_posted_textarea( 'post_excerpt' ); ?></textarea>
+                            <textarea name="post_excerpt" id="post-excerpt" rows="5" class="form-control" placeholder="Short description about the thing..."><?php echo dokan_posted_textarea( 'post_excerpt' ); ?></textarea>
                         </div>
 
                         <div class="form-group">
@@ -152,10 +155,20 @@ dokan_frontend_dashboard_scripts();
                     </div>
                 </div>
 
-                <!-- <textarea name="post_content" id="" cols="30" rows="10" class="span7" placeholder="Describe your product..."><?php echo dokan_posted_textarea( 'post_content' ); ?></textarea> -->
                 <div class="form-group">
-                    <?php wp_editor( $post_content, 'post_content', array('editor_height' => 50, 'quicktags' => false, 'media_buttons' => false, 'teeny' => true, 'editor_class' => 'post_content') ); ?>
+                    <?php 
+					$details = 'Details about your thing...';
+					wp_editor( $details, 'post_content', array('editor_height' => 50, 'quicktags' => false, 'media_buttons' => false, 'teeny' => true, 'editor_class' => 'post_content') ); ?>
                 </div>
+				
+				<div class="row">
+					<div class="col-md-12">
+					   <?php 
+						$instructions = 'Instructions about your thing...';
+						wp_editor( esc_textarea( $instructions  ), 'post_content_instruction', array('editor_height' => 50, 'quicktags' => false, 'media_buttons' => false, 'teeny' => true, 'editor_class' => 'post_content_instruction') ); ?>
+					</div>
+					<br/>
+				</div>
 
                 <?php do_action( 'dokan_new_product_form' ); ?>
 

@@ -8,6 +8,8 @@ dokan_redirect_if_not_seller();
 $post_id = $post->ID;
 $seller_id = get_current_user_id();
 
+$global_pirce =   dokan_get_option( 'seller_price', 'dokan_selling' ,'0.99' ) ;
+
 if ( isset( $_GET['product_id'] ) ) {
     $post_id = intval( $_GET['product_id'] );
     $post = get_post( $post_id );
@@ -42,6 +44,7 @@ if ( isset( $_POST['update_product']) ) {
 }
 
 $_regular_price = get_post_meta( $post_id, '_regular_price', true );
+
 $_sale_price = get_post_meta( $post_id, '_sale_price', true );
 $is_discount = !empty( $_sale_price ) ? true : false;
 $_sale_price_dates_from = get_post_meta( $post_id, '_sale_price_dates_from', true );
@@ -100,10 +103,10 @@ dokan_frontend_dashboard_scripts();
                                     <a href="#edit-product" data-toggle="tab"><?php _e( 'Edit', 'dokan' ); ?></a>
                                 </li>
                                 <li><a href="#product-options" data-toggle="tab"><?php _e( 'Options', 'dokan' ); ?></a></li>
-                                <li><a href="#product-inventory" data-toggle="tab"><?php _e( 'Inventory', 'dokan' ); ?></a></li>
+                                <!--li><a href="#product-inventory" data-toggle="tab"><?php _e( 'Inventory', 'dokan' ); ?></a></li>
                                 <li class="show_if_simple"><a href="#product-shipping" data-toggle="tab"><?php _e( 'Shipping', 'dokan' ); ?></a></li>
                                 <li><a href="#product-attributes" data-toggle="tab"><?php _e( 'Attributes', 'dokan' ); ?></a></li>
-                                <li class="show_if_variable"><a href="#product-variations" data-toggle="tab"><?php _e( 'Variations', 'dokan' ); ?></a></li>
+                                <li class="show_if_variable"><a href="#product-variations" data-toggle="tab"><?php _e( 'Variations', 'dokan' ); ?></a></li-->
                             </ul>
 
                             <div class="tab-content">
@@ -129,7 +132,7 @@ dokan_frontend_dashboard_scripts();
                                                     <input type="hidden" name="feat_image_id" class="dokan-feat-image-id" value="<?php echo $feat_image_id; ?>">
 
                                                     <i class="fa fa-cloud-upload"></i>
-                                                    <a href="#" class="dokan-feat-image-btn btn btn-sm"><?php _e( 'Upload a product cover image', 'dokan' ); ?></a>
+                                                    <a href="#" class="dokan-feat-image-btn btn btn-sm"><?php _e( 'Upload a thing cover image', 'dokan' ); ?></a>
                                                 </div>
 
                                                 <div class="image-wrap<?php echo $wrap_class; ?>">
@@ -143,30 +146,30 @@ dokan_frontend_dashboard_scripts();
                                             </div>
                                         </div>
 
-                                        <div class="col-md-7">
+                                        <div class="col-md-7 edit-details">
 
                                             <div class="form-group">
                                                 <input type="hidden" name="dokan_product_id" value="<?php echo $post_id; ?>">
-                                                <?php dokan_post_input_box( $post_id, 'post_title', array( 'placeholder' => 'Product name..', 'value' => $post->post_title ) ); ?>
+                                                <?php dokan_post_input_box( $post_id, 'post_title', array( 'placeholder' => 'Thing name..', 'value' => $post->post_title ) ); ?>
                                             </div>
 
-                                            <div class="row show_if_simple">
+                                            <!--div class="row show_if_simple">
                                                 <div class="form-group col-md-6">
                                                     <div class="input-group">
                                                         <span class="input-group-addon"><?php echo get_woocommerce_currency_symbol(); ?></span>
-                                                        <?php dokan_post_input_box( $post_id, '_regular_price', array( 'placeholder' => '9.99' ) ); ?>
+                                                        <?php dokan_post_input_box( $post_id, '_regular_price', array( 'placeholder' => '0.99', 'disabled'=>'disabled' ) ); ?>
                                                     </div>
                                                 </div>
 
 
-                                                <span class="pull-right">
-                                                    <label>
-                                                        <input type="checkbox" <?php checked( $is_discount, true ); ?> class="_discounted_price"> <?php _e( 'Discounted Price', 'dokan' ); ?>
-                                                    </label>
-                                                </span>
-                                            </div>
+                                                 <div class="col-md-6 inputvalign">
+														<label>
+															<input type="checkbox" <?php checked( $is_discount, true ); ?> class="_discounted_price"> <?php _e( 'Discounted Price', 'dokan' ); ?>
+														</label>
+													</div>
+											</div-->
 
-                                            <div class="show_if_simple">
+                                            <!--div class="show_if_simple">
                                                 <div class="special-price-container<?php echo $is_discount ? '' : ' dokan-hide'; ?>">
                                                     <div class="row form-group">
                                                         <div class="input-group col-md-6">
@@ -175,7 +178,7 @@ dokan_frontend_dashboard_scripts();
                                                         </div>
 
                                                         <div class="col-md-6">
-                                                            <a href="#" class="sale-schedule pull-right"><?php _e( 'Schedule', 'dokan' ); ?></a>
+                                                            <a href="#" class="sale-schedule"><?php _e( 'Schedule', 'dokan' ); ?></a>
                                                         </div>
                                                     </div>
 
@@ -198,12 +201,12 @@ dokan_frontend_dashboard_scripts();
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> <!-- .show_if_simple -->
+                                            </div--> <!-- .show_if_simple -->
 
 
 
                                             <div class="form-group">
-                                                <?php dokan_post_input_box( $post_id, 'post_excerpt', array( 'placeholder' => 'Short description about the product...', 'value' => $post->post_excerpt ), 'textarea' ); ?>
+                                                <?php dokan_post_input_box( $post_id, 'post_excerpt', array( 'placeholder' => 'Short description about the thing...', 'value' => $post->post_excerpt ), 'textarea' ); ?>
                                             </div>
 
                                             <div class="form-group">
@@ -236,6 +239,14 @@ dokan_frontend_dashboard_scripts();
                                             <?php wp_editor( esc_textarea( $post->post_content ), 'post_content', array('editor_height' => 50, 'quicktags' => false, 'media_buttons' => false, 'teeny' => true, 'editor_class' => 'post_content') ); ?>
                                         </div>
                                     </div>
+									
+									<div class="row">
+                                        <div class="col-md-12">
+										   <?php 
+											$instructions = get_post_meta( $post->ID, 'creation_instruction', true ); 
+											wp_editor( esc_textarea( $instructions  ), 'post_content_instruction', array('editor_height' => 50, 'quicktags' => false, 'media_buttons' => false, 'teeny' => true, 'editor_class' => 'post_content_instruction') ); ?>
+                                        </div>
+                                    </div>
 
                                     <?php do_action( 'dokan_product_edit_after_main' ); ?>
 
@@ -249,38 +260,38 @@ dokan_frontend_dashboard_scripts();
 
                                 </div> <!-- #product-options -->
 
-                                <div class="tab-pane" id="product-inventory">
+                                <!--div class="tab-pane" id="product-inventory">
 
-                                    <?php include_once dirname(__FILE__) . '/edit/inventory.php'; ?>
+                                    <?php //include_once dirname(__FILE__) . '/edit/inventory.php'; ?>
 
-                                    <?php do_action( 'dokan_product_edit_after_inventory' ); ?>
+                                    <?php //do_action( 'dokan_product_edit_after_inventory' ); ?>
 
-                                </div> <!-- #product-inventory -->
+                                </div--> <!-- #product-inventory -->
 
-                                <div class="tab-pane" id="product-shipping">
-                                    <?php include_once dirname(__FILE__) . '/edit/shipping.php'; ?>
+                                <!--div class="tab-pane" id="product-shipping">
+                                    <?php //include_once dirname(__FILE__) . '/edit/shipping.php'; ?>
 
-                                    <?php do_action( 'dokan_product_edit_after_shipping' ); ?>
-                                </div>
+                                    <?php //do_action( 'dokan_product_edit_after_shipping' ); ?>
+                                </div-->
 
                                 <!-- ===== Attributes ===== -->
 
-                                <div class="tab-pane show_if_simple" id="product-attributes">
+                                <!--div class="tab-pane show_if_simple" id="product-attributes">
 
-                                    <?php include_once dirname(__FILE__) . '/edit/attributes.php'; ?>
-                                    <?php include_once dirname(__FILE__) . '/edit/templates-js.php'; ?>
+                                    <?php// include_once dirname(__FILE__) . '/edit/attributes.php'; ?>
+                                    <?php //include_once dirname(__FILE__) . '/edit/templates-js.php'; ?>
 
                                     <?php do_action( 'dokan_product_edit_after_attributes' ); ?>
 
-                                </div> <!-- #product-attributes -->
+                                </div--> <!-- #product-attributes -->
 
-                                <div class="tab-pane show_if_variable" id="product-variations">
+                                <!--div class="tab-pane show_if_variable" id="product-variations">
 
                                     <?php dokan_variable_product_type_options(); ?>
 
                                     <?php do_action( 'dokan_product_edit_after_variations' ); ?>
 
-                                </div> <!-- #product-variations -->
+                                </div--> <!-- #product-variations -->
                             </div> <!-- .tab-content -->
                         </div> <!-- .tabbable -->
 

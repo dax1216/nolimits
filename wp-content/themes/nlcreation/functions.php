@@ -32,6 +32,37 @@ define( 'DOKAN_LIB_DIR', __DIR__ . '/lib' );
  *
  * @param string $class requested class name
  */
+
+ /*Custom Code*/
+require_once(get_template_directory() . '/vendor/wp-days-ago/wp_days_ago.php');
+require_once(get_template_directory() . '/vendor/woo-remove-qty.php');
+
+function getSeller(){
+	 global $product;
+
+    $author = get_user_by( 'id', $product->post->post_author );
+	?>
+		
+	<?php printf('<a class="thumb" href="%s">%s</a>', dokan_get_store_url( $author->ID ) , get_avatar( $author->ID, 80 )) ; ?>
+	<span class="name">by
+			<?php printf( '<a href="%s">%s</a>', dokan_get_store_url( $author->ID ), $author->display_name ); ?>
+	</span>
+<?php	
+}
+
+if ( ! function_exists( 'trimText' ) ) :
+
+    function trimText($text, $max_char, $moretext) {
+        if (strlen($text) > $max_char) {
+            $text = substr($text, 0, $max_char - 3). $moretext;
+        }
+        return $text;
+    }
+
+endif;
+
+/*End custom */
+
 function dokan_autoload( $class ) {
     if ( stripos( $class, 'Dokan_' ) !== false ) {
         $class_name = str_replace( array('Dokan_', '_'), array('', '-'), $class );
@@ -446,3 +477,138 @@ function dokan_admin_toolbar() {
 
 // Hook into the 'wp_before_admin_bar_render' action
 add_action( 'wp_before_admin_bar_render', 'dokan_admin_toolbar' );
+
+
+add_filter( 'woocommerce_product_tabs', 'woo_rename_tabs', 98 );
+function woo_rename_tabs( $tabs ) {
+ 
+	$tabs['description']['title'] = __( 'Thing Info' );		// Rename the description tab
+	$tabs['seller']['title'] = __( 'Maker Info' );		// Rename the description tab
+	//$tabs['additional_information']['title'] = __( 'Product Data' );	// Rename the additional information tab
+ 
+	return $tabs;
+ 
+}
+
+// Add custom tab
+add_filter( 'woocommerce_product_tabs', 'woo_new_product_tab' );
+function woo_new_product_tab( $tabs ) {
+	
+	// Adds the new tab
+	
+	$tabs['tab_files'] = array(
+		'title' 	=> __( 'Thing Files', 'woocommerce' ),
+		'priority' 	=> 30,
+		'callback' 	=> 'woo_new_product_tab_content_files'
+	);
+	
+	$tabs['tab_intstuctions'] = array(
+		'title' 	=> __( 'Instructions', 'woocommerce' ),
+		'priority' 	=> 20,
+		'callback' 	=> 'woo_new_product_tab_content_instructions'
+	);
+ 
+	return $tabs;
+ 
+}
+function woo_new_product_tab_content_files() { 
+	// The new tab content
+	global $post;
+	
+	
+	 $downloadable_files = get_post_meta( $post->ID, '_downloadable_files', false ); ?>
+		<h2>Files</h2>
+		<h4 class="details-header">File Name</h4>
+		<h4 class="size-header">Size</h4>
+		<div class="clear"></div>
+	
+	<?php 
+	foreach ($downloadable_files as $key =>  $values ) {
+		foreach ($values as $key => $value) {
+			$id = pn_get_attachment_id_from_url($value['file']);			
+			$bytes = filesize(get_attached_file($id));
+			$size = humanFileSize($bytes);
+			$fileurl = $value['file'];
+			$path = explode('/', $fileurl);
+			$fielname = $path[7]; ?>			
+			<div class="thing-file">
+					<div class="details">
+						<div class="filename"><?php echo $fielname; ?></div>
+					</div>
+					<span class="size"><?php echo $size; ?></span>
+				<div class="clear"></div>
+			</div>
+						
+<?php			
+		}
+	}
+ 
+?>
+
+
+
+<?php	
+}
+
+function woo_new_product_tab_content_instructions() {
+global $post; 
+	// The new tab content
+ 
+?>
+<h2>Instructions</h2>
+<?php	
+$instructions = get_post_meta( $post->ID, 'creation_instruction', true ); 
+	if(!empty($instructions)){
+		echo $instructions;
+	}else{
+		echo '<p>Instructions will be posted soon!</p>';
+	}
+}
+
+
+ /*	Include Meta Box
+/*-----------------------------------------------------------------------------------*/
+    define( 'RWMB_URL', trailingslashit( get_template_directory_uri() . '/vendor/meta-box' ) );
+    define( 'RWMB_DIR', trailingslashit( get_template_directory() . '/vendor/meta-box' ) );
+    require_once RWMB_DIR . 'meta-box.php';
+    require_once RWMB_DIR . 'config-meta-boxes.php';
+	
+    
+function pn_get_attachment_id_from_url( $attachment_url = '' ) {
+ 
+	global $wpdb;
+	$attachment_id = false;
+ 
+	// If there is no url, return.
+	if ( '' == $attachment_url )
+		return;
+ 
+	// Get the upload directory paths
+	$upload_dir_paths = wp_upload_dir();
+ 
+	// Make sure the upload path base directory exists in the attachment URL, to verify that we're working with a media library image
+	if ( false !== strpos( $attachment_url, $upload_dir_paths['baseurl'] ) ) {
+ 
+		// If this is the URL of an auto-generated thumbnail, get the URL of the original image
+		$attachment_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
+ 
+		// Remove the upload path base directory from the attachment URL
+		$attachment_url = str_replace( $upload_dir_paths['baseurl'] . '/', '', $attachment_url );
+ 
+		// Finally, run a custom database query to get the attachment ID from the modified attachment URL
+		$attachment_id = $wpdb->get_var( $wpdb->prepare( "SELECT wposts.ID FROM $wpdb->posts wposts, $wpdb->postmeta wpostmeta WHERE wposts.ID = wpostmeta.post_id AND wpostmeta.meta_key = '_wp_attached_file' AND wpostmeta.meta_value = '%s' AND wposts.post_type = 'attachment'", $attachment_url ) );
+ 
+	}
+ 
+	return $attachment_id;
+}
+
+function humanFileSize($size,$unit="") {
+	  if( (!$unit && $size >= 1<<30) || $unit == "GB")
+		return number_format($size/(1<<30),2)."GB";
+	  if( (!$unit && $size >= 1<<20) || $unit == "MB")
+		return number_format($size/(1<<20),2)."MB";
+	  if( (!$unit && $size >= 1<<10) || $unit == "KB")
+		return number_format($size/(1<<10),2)."KB";
+	  return number_format($size)." bytes";
+}

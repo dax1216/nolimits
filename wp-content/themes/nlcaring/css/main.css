@@ -973,3 +973,17 @@ width: 100%;
 	.my-property.call-to-help:hover{
 		box-shadow: 0px 0px 7px 0px #80b5cc;
 	}
+
+	#tbodyproject .del_proj {
+		background: url(../images/delete-icon.png) 0 0 no-repeat;
+		width: 16px;
+		height: 16px;
+		font-size: 0px;
+		display: inline-block;
+	}
+	#tbodyproject tr td {
+		vertical-align: middle;
+	}
+	#tbodyproject tr td input{
+		margin-bottom: 0px;
+	}

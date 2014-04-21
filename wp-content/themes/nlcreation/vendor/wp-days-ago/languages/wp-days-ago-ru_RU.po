@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wp-days-ago\n"
+"POT-Creation-Date: 2014-01-19 21:42+0100\n"
+"PO-Revision-Date: 2014-02-01 15:38+0200\n"
+"Last-Translator: Vegard Skjefstad <vegard@vegard.net>\n"
+"Language-Team: http://www.coinside.ru <yuri@coinside.ru>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.3\n"
+"X-Poedit-Basepath: ../\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../wp-days-ago/wp_days_ago-core.php:60
+msgid "year"
+msgstr "год"
+
+#: ../wp-days-ago/wp_days_ago-core.php:62
+msgid "years"
+msgstr "лет"
+
+#: ../wp-days-ago/wp_days_ago-core.php:75
+msgid "month"
+msgstr "месяц"
+
+#: ../wp-days-ago/wp_days_ago-core.php:77
+msgid "months"
+msgstr "месяцев"
+
+#: ../wp-days-ago/wp_days_ago-core.php:89
+msgid "day"
+msgstr "день"
+
+#: ../wp-days-ago/wp_days_ago-core.php:91
+msgid "Yesterday"
+msgstr "Вчера"
+
+#: ../wp-days-ago/wp_days_ago-core.php:95
+msgid "One week"
+msgstr "Одна неделя"
+
+#: ../wp-days-ago/wp_days_ago-core.php:97
+msgid "days"
+msgstr "дней"
+
+#: ../wp-days-ago/wp_days_ago-core.php:109
+msgid "hour"
+msgstr "час"
+
+#: ../wp-days-ago/wp_days_ago-core.php:111
+msgid "hours"
+msgstr "часов"
+
+#: ../wp-days-ago/wp_days_ago-core.php:123
+msgid "minute"
+msgstr "минута"
+
+#: ../wp-days-ago/wp_days_ago-core.php:125
+msgid "minutes"
+msgstr "минут"
+
+#: ../wp-days-ago/wp_days_ago-core.php:133
+msgid "Just now"
+msgstr "Только что"
+
+#: ../wp-days-ago/wp_days_ago-core.php:136
+msgid "prepender"
+msgstr ""
+
+#: ../wp-days-ago/wp_days_ago-core.php:136
+msgid "ago"
+msgstr "назад"

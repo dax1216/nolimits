@@ -71,13 +71,31 @@ class Dokan_Admin_Settings {
 
         do_action( 'dokan_admin_menu' );
 
-        add_submenu_page( 'dokan', __( 'Settings', 'dokan' ), __( 'Settings', 'dokan' ), $capability, 'dokan-settings', array($this, 'settings_page') );
+        $settings = add_submenu_page( 'dokan', __( 'Settings', 'dokan' ), __( 'Settings', 'dokan' ), $capability, 'dokan-settings', array($this, 'settings_page') );
         add_submenu_page( 'dokan', __( 'Add Ons', 'dokan' ), __( 'Add-ons', 'dokan' ), $capability, 'dokan-addons', array($this, 'addon_page') );
 
         add_action( $dashboard, array($this, 'dashboard_script' ) );
         add_action( $report, array($this, 'report_scripts' ) );
+        add_action( $settings, array($this, 'save_new_options' ) );
+		
     }
-
+	
+	
+	
+	function save_new_options()
+	{
+	  if(isset($_GET['settings-updated']) && $_GET['settings-updated'])
+	   {
+				global $wpdb;
+				
+				$global_price =   dokan_get_option( 'seller_price', 'dokan_selling' ,'0.99' ) ;				
+				
+				$wpdb->query("UPDATE $wpdb->postmeta SET meta_value = '{$global_price}' WHERE meta_key ='_price'");	
+				$wpdb->query("UPDATE $wpdb->postmeta SET meta_value = '{$global_price}' WHERE meta_key ='_regular_price'");	
+				
+	  }
+	}
+	
     function get_settings_sections() {
         $sections = array(
             array(
@@ -174,6 +192,17 @@ class Dokan_Admin_Settings {
                     'default' => '90',
                     'type' => 'text',
                 ),
+				
+				array(
+                    'name' => 'seller_price',
+                    'label' => __( 'Global Item Price', 'dokan' ),
+                    'desc' => __( 'Set a global price for each item', 'dokan' ),
+                    'default' => '0.99',
+                    'type' => 'text',
+                ),
+				
+				
+				
                 array(
                     'name' => 'order_status_change',
                     'label' => __( 'Order Status Change', 'dokan' ),
