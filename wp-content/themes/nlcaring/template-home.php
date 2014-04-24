@@ -19,10 +19,11 @@ if(!$show_banner || $show_banner =='help-static-banner'){
 					}
 					
 					 /* List of Help on Homepage */
-						$number_of_help = intval(get_option('theme_help_on_home'));
-						 if(!$number_of_properties){
-								$number_of_properties = 8;
-						  }
+					 
+					$number_of_help = intval(get_option('theme_help_on_home'));
+					 if(!$number_of_help){
+							$number_of_help = 8;
+					 }
 						
 					$home_args = array(
 						'post_type' => 'caring',
@@ -30,7 +31,20 @@ if(!$show_banner || $show_banner =='help-static-banner'){
 						'paged' => $paged
 					);
 					
-					   $home_helps_query = new WP_Query( $home_args );
+					$sorty_by = get_option('theme_sorty_by');					
+					if( !empty($sorty_by) ){
+						if( $sorty_by == 'hero-to-call' ){
+							$home_args['orderby'] = 'meta_value_num';
+							$home_args['meta_key'] = 'NO_LIMIT_help_status';
+							$home_args['order'] = 'DESC';
+						}elseif( $sorty_by == 'call-to-hero' ){
+							$home_args['orderby'] = 'meta_value';
+							$home_args['meta_key'] = 'NO_LIMIT_help_status';
+							$home_args['order'] = 'ASC';
+						}
+					}
+					
+					 $home_helps_query = new WP_Query( $home_args );
 						if ( $home_helps_query->have_posts() ) :									
 				?>
 				<ul class="grid masonry">

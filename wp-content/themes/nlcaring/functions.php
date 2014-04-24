@@ -425,8 +425,8 @@ add_theme_support( 'post-thumbnails' );
 add_image_size('blog_thumb', 220, 168, true);
 add_image_size( 'help-thumb-image', 90, 64, true);        // For Home page posts thumbnails/Featured Properties carousels thumb
 add_image_size( 'default_help', 220, 157, true);             
-add_image_size( 'gallery_image', 335, 222, true);             
-
+add_image_size( 'gallery_image', 421, 300, true);             
+add_image_size( 'gallery_hero_image', 335, 239, true);        
 
 add_image_size( 'post-featured-image', 830, 323, true);         // For Standard Post Thumbnails
 
@@ -444,9 +444,6 @@ add_image_size( 'grid-view-image', 246, 162, true);             // For Property 
 add_theme_support( 'menus' );
 register_nav_menus( array(
 	'main_nav' => 'Main Navigation', 
-	'top_nav' => 'Top Navigation', 
-	'mobile_top_nav' => 'Mobile Header Menu',
-	'mobile_footer_nav' => 'Mobile Footer Menu'
 ));
 
 
@@ -612,10 +609,22 @@ function help_field_value($key=NULL)
 
 function help_status(){
 		global $post;
-		return get_post_meta($post->ID, 'NO_LIMIT_help_status', true); 
-	
+		return get_post_meta($post->ID, 'NO_LIMIT_help_status', true); 	
 }
 
+function show_status(){
+	$status =  help_field_value('NO_LIMIT_help_status'); 
+	switch ($status){
+	case '1':
+		echo 'Call to Help';
+		break;
+	case '2':
+		echo 'Journey';
+		break;
+	default;
+		echo 'Hero Rally';
+	}
+}
 function help_badge($size=NULL){
 		global $post;
 		$caring_badge = get_post_meta( $post->ID,'NO_LIMIT_caring_badge',true);  
@@ -664,6 +673,7 @@ function help_instruction(){
 function help_gallery($name=NULL){ 
 	global $post;
 	$thumbnail_big = 'gallery_image';
+	$thumbnail_hero = 'gallery_hero_image';
 	$thumbnail_small = 'thumbnail';
 	if(isset($name)){
 	?>
@@ -672,7 +682,7 @@ function help_gallery($name=NULL){
 		  <ul class="slides">
 				<?php 
 				
-				$gallery_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_big, $post->ID );
+				$gallery_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_hero, $post->ID );
 				$thumb_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_small, $post->ID );										
 				if(!empty($gallery_images)) { 
 					 foreach( $gallery_images as $prop_image_id=>$prop_image_meta ){
@@ -680,7 +690,7 @@ function help_gallery($name=NULL){
 					}						
 				}else{
 					 if( has_post_thumbnail( $post->ID ) ){ /*Set featured image if no gallery*/										
-						echo '<li>'.get_the_post_thumbnail( $post->ID, 'thumbnail_big' ).'<span class="cover">&nbsp;</span></li>';
+						echo '<li>'.get_the_post_thumbnail( $post->ID, $thumbnail_small ).'<span class="cover">&nbsp;</span></li>';
 					}else{ /* if no all, Set Default Image*/
 						echo '<li><img width="335" height="222" src="'.get_template_directory_uri().'/contents/images/default.jpg"></li>';
 					}
@@ -711,7 +721,7 @@ function help_gallery($name=NULL){
 						}						
 					}else{
 						 if( has_post_thumbnail( $post->ID ) ){ /*Set featured image if no gallery*/										
-							echo '<li>'.get_the_post_thumbnail( $post->ID, 'thumbnail_big' ).'<span class="cover">&nbsp;</span></li>';
+							echo '<li>'.get_the_post_thumbnail( $post->ID, $thumbnail_small ).'<span class="cover">&nbsp;</span></li>';
 						}else{ /* if no all, Set Default Image*/
 							echo '<li><img width="335" height="222" src="'.get_template_directory_uri().'/contents/images/default.jpg"></li>';
 						}
@@ -750,3 +760,21 @@ function help_slogan(){ ?>
 	</div>
 
 <?php }
+
+function block_dashboard() {
+    $file = basename($_SERVER['PHP_SELF']);
+    if (is_user_logged_in() && is_admin() && !current_user_can('edit_posts') && $file != 'admin-ajax.php'){
+        wp_redirect( home_url() );
+        exit();
+    }
+}
+
+add_action('init', 'block_dashboard');
+
+add_action('after_setup_theme', 'remove_admin_bar');
+
+function remove_admin_bar() {
+if (!current_user_can('administrator') && !is_admin()) {
+  show_admin_bar(false);
+}
+}

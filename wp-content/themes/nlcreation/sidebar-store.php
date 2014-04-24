@@ -55,7 +55,7 @@ $map_location = isset( $store_info['location'] ) ? esc_attr( $store_info['locati
         <?php } ?>
 
         <aside class="widget store-contact">
-            <h3 class="widget-title"><?php _e( 'Contact Seller', 'dokan' ); ?></h3>
+            <h3 class="widget-title"><?php _e( 'Contact Maker', 'dokan' ); ?></h3>
 
             <form id="dokan-form-contact-seller" action="" method="post" class="seller-form clearfix">
                 <div class="ajax-response"></div>

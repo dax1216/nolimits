@@ -28,6 +28,49 @@
 	wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
+	<div class="navbar">
+			<div class="wrapper">
+					<ul class="nav-left">
+						<li><a title="My Orders" href="http://nolimits.com/my-orders/">My Orders</a></li>
+						<li><a title="Dashboard" href="http://nolimits.com/dashboard/">Dashboard</a></li>
+					</ul>
+					<ul class="nav-right">
+						<?php 
+						$submit_url = get_option('theme_submit_url');
+						$my_help_url = get_option('theme_my_help_url');
+						$my_profile_url = get_option('theme_my_profile_url');
+						if(is_user_logged_in()) {
+							if(!empty($submit_url)){
+								echo '<li><a href="'.$submit_url.'">Submit Help</a></li>';
+							}							
+							if(!empty($my_help_url)){
+								echo '<li><a href="'.$my_help_url.'">My Helps</a></li>';
+							}
+							
+							if(!empty($my_profile_url)){
+								echo '<li><a href="'.$my_profile_url.'">Profile</a></li>';
+							}							
+							echo '<li><a href="'.wp_logout_url( home_url() ).'">Logout</a></li>';
+							
+						}else{
+							  $theme_login_url = get_option('theme_login_url');							  
+							if(!empty($submit_url)){
+								echo '<li><a href="'.$submit_url.'">Submit Help</a></li>';
+							}							
+							if(!empty($theme_login_url)){
+								echo '<li><a href="'.$theme_login_url.'">Login</a></li>';
+							}							
+							if(!empty($theme_login_url)){
+								echo '<li><a href="'.$theme_login_url.'">Register</a></li>';
+							}
+						}
+						?>
+					</ul>
+					
+					
+					<div class="clearfix"></div>
+			</div>
+	</div>
 	<div class="wrapper">
 		<header id="header">
 			<div id="logo">			

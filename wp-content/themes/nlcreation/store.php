@@ -18,7 +18,7 @@ get_header();
 <?php $url = get_template_directory_uri() . '/assets/images/footer'; ?>
 
 
-<?php get_sidebar( 'store' ); ?>
+
 
 <div id="primary" class="content-area col-md-9">
     <div id="content" class="site-content store-page-wrap woocommerce" role="main">
@@ -128,6 +128,7 @@ get_header();
     </div>
 
     </div><!-- #content .site-content -->
+	<?php get_sidebar( 'store' ); ?>
 </div><!-- #primary .content-area -->
 
 <?php get_footer(); ?>

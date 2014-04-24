@@ -1,8 +1,8 @@
-<?php $status  = help_status(); ?>
-<li class="cell <?php echo ( $status == 'Hero Rally')  ? 'hero-rally' :  (($status == 'Journey') ? 'journey'  : 'call-to-help' ); ?>">
+<?php $status  = help_status();  ?>
+<li class="cell <?php echo ( $status == '3')  ? 'hero-rally' :  (($status == '2') ? 'journey'  : 'call-to-help' ); ?>">
 	<a href="<?php the_permalink(); ?>" title="" class="thumbnail">	
 	<?php help_thumbnail();	?>
-	<span class="cover"><span class="status">JOURNEY ACTIVATED</span></span> <?php echo ($status =='Hero Rally')  ? '<span class="btn-help"></span>' : '' ?></a>
+	<span class="cover"><span class="status">JOURNEY ACTIVATED</span></span> <?php echo ($status =='3')  ? '<span class="btn-help"></span>' : '' ?></a>
 	<div class="box-body">
 		<header class="title">
 		<?php help_badge(); ?>

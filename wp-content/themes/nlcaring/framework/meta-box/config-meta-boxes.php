@@ -54,6 +54,16 @@ $meta_boxes[] = array(
             'max_file_uploads' => 48
         ),
 		
+		
+		  array(
+            'name'             => __('Hero Gallery Images','framework'),
+            'id'               => "{$prefix}caring_hero_images",
+            'desc' => __('Provide images for gallery on call to help detail page. Images should have minimum width of 770px and minimum height of 386px. ( Bigger images will be cropped automatically )','framework'),
+            'type'             => 'image_advanced',
+            'max_file_uploads' => 48
+        ),
+		
+		
 		 array(
             'name'             => __('Badge','framework'),
             'id'               => "{$prefix}caring_badge",
@@ -92,9 +102,9 @@ $meta_boxes[] = array(
 				'type'          => 'select',
 				 'std'       => 'Call to help',
 				'options' => array(
-					'Call to Help' => __( 'Call to help ', 'framework' ),
-					'Journey' => __( 'Journey', 'framework' ),
-					'Hero Rally' => __( 'Hero Rally', 'framework' )
+					1 => __( 'Call to help ', 'framework' ),
+					2 => __( 'Journey', 'framework' ),
+					3 => __( 'Hero Rally', 'framework' )
 				)			
 			
 			),

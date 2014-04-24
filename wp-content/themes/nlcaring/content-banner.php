@@ -9,7 +9,7 @@
 						<p><?php echo get_option('theme_banner_text'); ?></p>
 						<?php $link = get_option('theme_banner_link'); ?>
 						<?php if($link) :?>
-							<a href="<?php echo $link; ?>" class="nl-btn red"><i class="fa fa-play"></i> &nbsp; <?php get_option('theme_banner_link_text'); ?></a>
+							<a href="<?php echo $link; ?>" class="nl-btn red"><i class="fa fa-play"></i> &nbsp; <?php echo get_option('theme_banner_link_text'); ?></a>
 						<?php endif; ?>
 					</div>
 					<div class="clearfix"></div>

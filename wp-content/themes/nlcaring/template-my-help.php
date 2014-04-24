@@ -40,7 +40,20 @@ get_header();
                             'post_status' => array( 'pending', 'draft', 'publish', 'auto-draft', 'future' ),
                             'author' => $current_user->ID
                         );
-
+				
+						$sorty_by = get_option('theme_sorty_by');					
+							if( !empty($sorty_by) ){
+								if( $sorty_by == 'hero-to-call' ){
+									$my_props_args['orderby'] = 'meta_value_num';
+									$my_props_args['meta_key'] = 'NO_LIMIT_help_status';
+									$my_props_args['order'] = 'DESC';
+								}elseif( $sorty_by == 'call-to-hero' ){
+									$my_props_args['orderby'] = 'meta_value';
+									$my_props_args['meta_key'] = 'NO_LIMIT_help_status';
+									$my_props_args['order'] = 'ASC';
+								}
+							}
+				
                         $my_properties_query = new WP_Query( $my_props_args );
                         if ( $my_properties_query->have_posts() ) :
 
@@ -57,7 +70,7 @@ get_header();
 								 $status  = help_field_value('NO_LIMIT_help_status');
 								 
                                 ?>
-                                <div class="my-property clearfix <?php echo ( $status == 'Hero Rally')  ? 'hero-rally' :  (($status == 'Journey') ? 'journey'  : 'call-to-help' ); ?>">
+                                <div class="my-property clearfix <?php echo ( $status == '3')  ? 'hero-rally' :  (($status == '2') ? 'journey'  : 'call-to-help' ); ?>">
 
                                     <div class="property-thumb cell">
                                         <?php
@@ -79,7 +92,7 @@ get_header();
                                     </div>
 
                                     <div class="property-publish-status cell">
-                                        <h5><?php echo help_field_value('NO_LIMIT_help_status'); ?></h5>
+                                        <h5><?php show_status(); ?></h5>
                                     </div>
 									
 									
@@ -96,14 +109,11 @@ get_header();
                                             ?><a href="<?php echo $edit_link; ?>"><i class="fa fa-pencil"></i></a><?php
                                         }
 
-                                        /* Preview Post Link */
-                                        if ( current_user_can('read_private_posts') ) {
-                                            $preview_link = set_url_scheme( get_permalink( $post->ID ) );
-                                            $preview_link = esc_url( apply_filters( 'preview_post_link', add_query_arg( 'preview', 'true', $preview_link ) ) );
-                                            if(!empty($preview_link)){
-                                                ?><a target="_blank" href="<?php echo $preview_link; ?>"><i class="fa fa-eye"></i></a><?php
-                                            }
-                                        }
+                                      
+                                                ?>
+												<a target="_blank" href="<?php the_permalink(); ?>"><i class="fa fa-eye"></i></a>
+												<?php
+                                      
 
                                         /* Delete Post Link Bypassing Trash */
                                         if ( current_user_can('delete_posts') ) {
@@ -125,7 +135,7 @@ get_header();
                         else:
                             ?>
                             <div class="alert-wrapper">
-                                <h5><?php _e('No Properties Found!', 'framework') ?></h5>
+                                <p class="error message"><?php _e('No Properties Found!', 'framework') ?></p>
                             </div>
                             <?php
                         endif;
@@ -135,7 +145,7 @@ get_header();
                     }else{
                         ?>
                         <div class="alert-wrapper">
-                            <h5><?php _e('Please, Log in to view your help!', 'framework') ?></h5>
+                        <p class="error message"><?php _e('Please, <a href="/my-account/">Log in</a> to view your help!', 'framework') ?></p>
                         </div>
                         <?php
                     }

@@ -10,9 +10,9 @@
  */
 get_header(); ?>
 
-<?php //get_sidebar( 'shop' ); ?>
 
-<div id="primary" class="content-area col-md-12">
+
+<div id="primary" class="content-area col-md-9">
     <div id="content" class="site-content" role="main">
 
 	<?php
@@ -86,5 +86,5 @@ get_header(); ?>
 
 	</div><!-- #content .site-content -->
 </div><!-- #primary .content-area -->
-
+<?php get_sidebar( 'shop' ); ?>
 <?php get_footer(); ?>

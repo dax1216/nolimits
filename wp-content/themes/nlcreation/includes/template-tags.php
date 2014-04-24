@@ -352,7 +352,7 @@ function dokan_dashboard_nav( $active_menu ) {
 
 function dokan_category_widget() {
      the_widget( 'Dokan_Category_Widget', array(
-        'title' => __( 'Product Categories', 'dokan' )
+        'title' => __( 'Thing Categories', 'dokan' )
         ),
         array(
             'before_widget' => '<aside class="widget dokan-category-menu">',

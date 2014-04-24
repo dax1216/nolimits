@@ -106,7 +106,7 @@ if( !function_exists( 'property_custom_columns' ) ){
                 if(has_post_thumbnail($post->ID)){
                     ?>
                     <a href="<?php the_permalink(); ?>" target="_blank">
-                        <?php the_post_thumbnail('post-thumbnail');?>
+                        <?php the_post_thumbnail('thumbnail');?>
                     </a>
                     <?php
                 }
@@ -124,10 +124,7 @@ if( !function_exists( 'property_custom_columns' ) ){
                 }
                 break;
             case 'status':
-                $status = get_post_meta($post->ID,$prefix.'help_status',true);
-                if(!empty($status)){
-                    echo $status;
-                }
+                show_status();
                 break;
         }
     }

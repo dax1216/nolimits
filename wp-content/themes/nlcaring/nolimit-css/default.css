@@ -1313,7 +1313,7 @@ p.info {
   color: #38b6d7;
   padding: 12px 35px 12px 22px;
   margin-bottom: 18px;
-  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-family: "exo_2light", Helvetica, Arial, sans-serif;
   font-weight: 300;
   position: relative;
 }
@@ -1324,7 +1324,7 @@ p.tip {
   color: #6b6631;
   padding: 12px 35px 12px 22px;
   margin-bottom: 18px;
-  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-family: "exo_2light", Helvetica, Arial, sans-serif;
   font-weight: 300;
   position: relative;
 }
@@ -1335,7 +1335,7 @@ p.success {
   color: #284b13;
   padding: 12px 35px 12px 22px;
   margin-bottom: 18px;
-  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-family: "exo_2light", Helvetica, Arial, sans-serif;
   font-weight: 300;
   position: relative;
 }
@@ -1346,7 +1346,7 @@ p.error {
   color: #7e1613;
   padding: 12px 35px 12px 22px;
   margin-bottom: 18px;
-  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-family: "exo_2light", Helvetica, Arial, sans-serif;
   font-weight: 300;
   position: relative;
 }

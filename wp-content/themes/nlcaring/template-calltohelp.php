@@ -14,22 +14,34 @@ get_header(); ?>
 		</div>
 		<section class="wrapper">
 			<div class="callToHelp">
-				<?php 
-			
+				<?php 			
 					
-					 /* List of Help on Homepage */
-						$number_of_help = intval(get_option('theme_help_on_home'));
-						 if(!$number_of_properties){
-								$number_of_properties = 8;
+						$number_of_help = intval(get_option('theme_number_of_helps'));
+						 if(!$number_of_help){
+								$number_of_help = 8;
 						  }
 						
-					$home_args = array(
-						'post_type' => 'caring',
-						'posts_per_page' => $number_of_help,
-						'paged' => $paged
-					);
+						$help_args = array(
+							'post_type' => 'caring',
+							'posts_per_page' => $number_of_help,
+							'paged' => $paged
+						);
+						
+						$sorty_by = get_option('theme_sorty_by');
 					
-					   $home_helps_query = new WP_Query( $home_args );
+							if( !empty($sorty_by) ){
+								if( $sorty_by == 'hero-to-call' ){
+									$help_args['orderby'] = 'meta_value_num';
+									$help_args['meta_key'] = 'NO_LIMIT_help_status';
+									$help_args['order'] = 'DESC';
+								}elseif( $sorty_by == 'call-to-hero' ){
+									$help_args['orderby'] = 'meta_value';
+									$help_args['meta_key'] = 'NO_LIMIT_help_status';
+									$help_args['order'] = 'ASC';
+								}
+							}
+					
+					   $home_helps_query = new WP_Query( $help_args );
 						if ( $home_helps_query->have_posts() ) :									
 				?>
 				<ul class="grid masonry">

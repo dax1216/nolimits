@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Woo Pages
+ * Template Name: Thing Pages
  *
  * @package _bootstraps
  * @package _bootstraps - 2013 1.0

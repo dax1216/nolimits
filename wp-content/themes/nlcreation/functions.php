@@ -210,8 +210,6 @@ class WeDevs_Dokan {
          */
         register_nav_menus( array(
             'primary' => __( 'Primary Menu', 'dokan' ),
-            'top-left' => __( 'Top Left', 'dokan' ),
-            'footer' => __( 'Footer Menu', 'dokan' ),
         ) );
 
         add_theme_support( 'woocommerce' );
@@ -493,15 +491,16 @@ function woo_rename_tabs( $tabs ) {
 // Add custom tab
 add_filter( 'woocommerce_product_tabs', 'woo_new_product_tab' );
 function woo_new_product_tab( $tabs ) {
-	
-	// Adds the new tab
-	
-	$tabs['tab_files'] = array(
-		'title' 	=> __( 'Thing Files', 'woocommerce' ),
-		'priority' 	=> 30,
-		'callback' 	=> 'woo_new_product_tab_content_files'
-	);
-	
+	global $post;
+	$downloadable_files = get_post_meta( $post->ID, '_downloadable_files', false );
+	// Add the new tab
+	if(count($downloadable_files) ){
+		$tabs['tab_files'] = array(
+			'title' 	=> __( 'Thing Files', 'woocommerce' ),
+			'priority' 	=> 30,
+			'callback' 	=> 'woo_new_product_tab_content_files'
+		);
+	}
 	$tabs['tab_intstuctions'] = array(
 		'title' 	=> __( 'Instructions', 'woocommerce' ),
 		'priority' 	=> 20,
@@ -513,15 +512,13 @@ function woo_new_product_tab( $tabs ) {
 }
 function woo_new_product_tab_content_files() { 
 	// The new tab content
-	global $post;
-	
-	
-	 $downloadable_files = get_post_meta( $post->ID, '_downloadable_files', false ); ?>
+	global $post;	
+	 $downloadable_files = get_post_meta( $post->ID, '_downloadable_files', false ); 	 
+	 ?>
 		<h2>Files</h2>
 		<h4 class="details-header">File Name</h4>
 		<h4 class="size-header">Size</h4>
-		<div class="clear"></div>
-	
+		<div class="clear"></div>	
 	<?php 
 	foreach ($downloadable_files as $key =>  $values ) {
 		foreach ($values as $key => $value) {
@@ -537,15 +534,12 @@ function woo_new_product_tab_content_files() {
 					</div>
 					<span class="size"><?php echo $size; ?></span>
 				<div class="clear"></div>
-			</div>
-						
+			</div>						
 <?php			
 		}
 	}
  
 ?>
-
-
 
 <?php	
 }

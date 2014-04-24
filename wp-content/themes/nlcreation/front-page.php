@@ -40,7 +40,7 @@ get_header();
 
         <?php if ( dokan_get_option( 'show_featured', 'dokan_home', 'on' ) == 'on' ) { ?>
             <div class="slider-container woocommerce">
-                <h2 class="slider-heading"><?php _e( 'Featured Items', 'dokan' ); ?> &nbsp; &nbsp; <a href="#">View All</a></h2>
+                <h2 class="slider-heading"><?php _e( 'Featured Items', 'dokan' ); ?> &nbsp; <a href="/featured">View All</a></h2>
 
                 <div class="product-sliders">
                     <ul class="slides">
@@ -61,7 +61,7 @@ get_header();
 
         <?php if ( dokan_get_option( 'show_latest', 'dokan_home', 'on' ) == 'on' ) { ?>
             <div class="slider-container woocommerce">
-                <h2 class="slider-heading"><?php _e( 'Recently Added', 'dokan' ); ?></h2>
+                <h2 class="slider-heading"><?php _e( 'Recently Added', 'dokan' ); ?>  &nbsp; <a href="/collection">View All</a></h2>
 
                 <div class="product-sliders">
                     <ul class="slides">

@@ -115,10 +115,6 @@ if (!function_exists('of_options'))
             "std" => "",
             "type" => "textarea");
 
-
-
-
-
         /* Home Page Options */
         $options[] = array( "name" => __('Home','framework'),
             "id" => $shortname."_home_heading",
@@ -132,7 +128,7 @@ if (!function_exists('of_options'))
             "options" => array(
                 'help-no-banner' => __('Nope','framework'),
                 'help-static-banner' => __('Display a static banner','framework'),
-                'help-slider' => __('Display a slider from help content ( For future requrest )','framework'),
+                'help-slider' => __('Display a slider from help content ( For future request )','framework'),
             ));
 
 
@@ -157,30 +153,9 @@ if (!function_exists('of_options'))
             "type" => "text");
 
 
-        $options[] = array( "name" => __('What Properties you want to display on Homepage ?','framework'),
-            "desc" => __('','framework'),
-            "id" => $shortname."_home_properties",
-            "std" => "recent",
-            "type" => "radio",
-            "options" => array(
-                'recent' => __('Recent Help','framework'),
-                'based-on-selection' => __('Properties based on selected Types, Statuses and Cities.','framework')
-            ));
-
-
       
        
 
-        $options[] = array( "name" => __('Sort Help By ?','framework'),
-            "desc" => __('','framework'),
-            "id" => $shortname."_sorty_by",
-            "std" => "recent",
-            "type" => "radio",
-            "options" => array(
-                'recent' => __('Time - Recent First','framework'),
-                'low-to-high' => __('Price - Low to High','framework'),
-                'high-to-low' => __('Price - High to Low','framework')
-            ));
 
         $options[] = array( "name" => __('Number of Help to display on Homepage','framework'),
             "id" => $shortname."_help_on_home",
@@ -190,7 +165,7 @@ if (!function_exists('of_options'))
 
 
         /* Call to help Options */
-        $options[] = array( "name" => __('Call to help','framework'),
+       /*  $options[] = array( "name" => __('Call to help','framework'),
             "id" => $shortname."_property_heading",
             "type" => "heading");
 
@@ -218,13 +193,13 @@ if (!function_exists('of_options'))
             "desc" => __('Yes','framework'),
             "id" => $shortname."_display_similar_properties",
             "std" => "true",
-            "type" => "checkbox");
+            "type" => "checkbox"); */
 
 
 
 
         /* Option Page - Gallery */
-        $options[] = array( "name" => __('Galleries','framework'),
+      /*   $options[] = array( "name" => __('Galleries','framework'),
             "type" => "heading");
 
         $options[] = array( "name" => __('Banner Title','framework'),
@@ -238,7 +213,7 @@ if (!function_exists('of_options'))
             "id" => $shortname.'_gallery_banner_sub_title',
             "std" => __('Look for your desired property more efficiently', 'framework'),
             "type" => "text");
-
+ */
 
 
 
@@ -246,37 +221,29 @@ if (!function_exists('of_options'))
         $options[] = array( "name" => __('General','framework'),
             "id" => $shortname."_general_heading",
             "type" => "heading");
-
-        $options[] = array( "name" => __('What you want to display in area below header on Listing & Taxonomy pages ?','framework'),
+		
+		
+        $options[] = array( "name" => __('Sort Help By ?','framework'),
             "desc" => __('','framework'),
-            "id" => $shortname . "_listing_module",
-            "std" => "simple-banner",
+            "id" => $shortname."_sorty_by",
+            "std" => "recent",
             "type" => "radio",
             "options" => array(
-                'properties-map' => __('Display Google Map with Properties Markers','framework'),
-                'simple-banner' => __('Display Simple Image Based Banner','framework')
+                'recent' => __('Time - Recent First','framework'),
+                'call-to-hero' => __('Call to Help - Call to help to Hero Rally','framework'),
+                'hero-to-call' => __('Hero Rally - Hero rally to Call to help','framework')
             ));
+	
 
-        $options[] = array( "name" => __('Number of Properties to display in Property Listing Template','framework'),
+        $options[] = array( "name" => __('Number of helps to display in Call to help Template','framework'),
             "desc" => '',
-            "id" => $shortname."_number_of_properties",
+            "id" => $shortname."_number_of_helps",
             "std" => "3",
             "type" => "select",
-            "options" => array(3,6,9,12,15,18,21,24,27));
+             "options" => array(4,8,12,16,20,24,28));
 
-        $options[] = array( "name" => __('Lightbox Plugin','framework'),
-            "desc" => __('Select the lightbox plugin that you want to use','framework'),
-            "id" => $shortname."_lightbox_plugin",
-            "std" => "swipebox",
-            "type" => "radio",
-            "options" => array(
-                'swipebox'      => __('Swipebox Plugin','framework'),
-                'pretty-photo'  => __('Pretty Photo Plugin','framework')
-            ));
-
-
-
-
+     
+/* 
         $options[] = array( "name" => __('Do you want to display reCAPTCHA in contact forms ?','framework'),
             "desc" => __('Yes','framework'),
             "id" => $shortname."_show_reCAPTCHA",
@@ -293,11 +260,11 @@ if (!function_exists('of_options'))
             "desc" => __('','framework'),
             "id" => $shortname."_recaptcha_private_key",
             "std" => "",
-            "type" => "text");
+            "type" => "text"); */
 
 
         /* Option Page - Contact */
-        $options[] = array( "name" => __('Contact','framework'),
+      /*   $options[] = array( "name" => __('Contact','framework'),
             "id" => $shortname."_contactus_heading",
             "type" => "heading");
 
@@ -371,7 +338,7 @@ if (!function_exists('of_options'))
             "desc" => __("Provide target email address that will receive messages from contact form.",'framework'),
             "id" => $shortname."_contact_email",
             "std" => "",
-            "type" => "text");
+            "type" => "text"); */
 
 
 
@@ -398,11 +365,6 @@ if (!function_exists('of_options'))
             "id" => $shortname."_members_heading",
             "type" => "heading");
 
-        $options[] = array( "name" => __('Do you want to enable header navigation for user Login and Register ?','framework'),
-            "desc" => __('Yes','framework'),
-            "id" => $shortname."_enable_user_nav",
-            "std" => "true",
-            "type" => "checkbox");
 
         $options[] = array( "name" => __('Login & Register Page URL','framework'),
             "desc" => __('Create a Page Using Login & Register Template and Provide its URL here.','framework'),
@@ -428,9 +390,15 @@ if (!function_exists('of_options'))
             "std" => "",
             "type" => "text");
 
-        $options[] = array( "name" => __( 'My Properties Page URL','framework' ),
-            "desc" => __('Create a Page Using My Properties Template and Provide its URL here.','framework'),
-            "id" => $shortname."_my_properties_url",
+        $options[] = array( "name" => __( 'My Help Page URL','framework' ),
+            "desc" => __('Create a Page Using My Help Template and Provide its URL here.','framework'),
+            "id" => $shortname."_my_help_url",
+            "std" => '',
+            "type" => "text");
+			
+		  $options[] = array( "name" => __( 'My Profile Page URL','framework' ),
+            "desc" => __('Create a Page Using My Profile Template and Provide its URL here.','framework'),
+            "id" => $shortname."_my_profile_url",
             "std" => '',
             "type" => "text");
 
