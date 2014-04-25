@@ -621,7 +621,7 @@ function show_status(){
 	case '2':
 		echo 'Journey';
 		break;
-	default;
+	case '3':
 		echo 'Hero Rally';
 	}
 }
@@ -682,8 +682,8 @@ function help_gallery($name=NULL){
 		  <ul class="slides">
 				<?php 
 				
-				$gallery_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_hero, $post->ID );
-				$thumb_images = rwmb_meta( 'NO_LIMIT_caring_'.$name.'_images', 'type=plupload_image&size='.$thumbnail_small, $post->ID );										
+				$gallery_images = rwmb_meta( 'NO_LIMIT_caring_images', 'type=plupload_image&size='.$thumbnail_hero, $post->ID );
+				$thumb_images = rwmb_meta( 'NO_LIMIT_caring_images', 'type=plupload_image&size='.$thumbnail_small, $post->ID );										
 				if(!empty($gallery_images)) { 
 					 foreach( $gallery_images as $prop_image_id=>$prop_image_meta ){
 						echo '<li><img src="'.$prop_image_meta['url'].'" alt="'.$prop_image_meta['title'].'" /><span class="cover">&nbsp;</span></li>';
@@ -778,3 +778,38 @@ if (!current_user_can('administrator') && !is_admin()) {
   show_admin_bar(false);
 }
 }
+add_action('wp_ajax_delete_attachment', 'delete_attachment');
+function delete_attachment() {
+	wp_delete_attachment($_POST['download_id']);
+	die();
+}
+
+/*Gallery Of Love*/
+
+//add_action('comment_form_logged_in_after', 'add_love_attachement');
+		
+
+function add_love_attachement(){
+$html = '<p class="attachment-txt">Attached Gallery of Love Image to this comment</p>';
+$html .='<input type="file" name="_love_image_attached"  accept="image/*" />';
+echo $html;
+}
+
+//saving images
+
+//add_action( 'comment_post', 'save_love_attached_comment_meta_data' );
+
+function save_love_attached_comment_meta_data($comment_id){
+/* if( isset( $_POST['c_image_attached'] )  && $_POST['c_image_attached']  != '' ){
+	$images = $_POST['c_image_attached'];
+	add_comment_meta( $comment_id, 'c_image_attached', $images, false ); */
+}
+
+function edit_help_link(){
+	if(is_user_logged_in()){
+		global $post;
+		$id = $post->ID;
+		echo '<a href="/caring/submit-help/?edit_help='.$id.'" class="edit">Edit <i class="fa fa-edit"></i></a>';	
+	}
+}	
+

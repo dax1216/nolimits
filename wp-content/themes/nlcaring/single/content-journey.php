@@ -1,6 +1,6 @@
 <div class="section-heading">
 	<div class="wrapper">
-		<h2 class="page-title">PARTICIPATION IN THE JOURNEY</h2>							
+		<h2 class="page-title">PARTICIPATION IN THE JOURNEY <?php edit_help_link(); ?></h2>							
 	</div>
 </div>
 <div id="participants" class="wrapper">

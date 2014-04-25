@@ -151,13 +151,13 @@ $meta_boxes[] = array(
 
 $meta_boxes[] = array(
     // Meta box id, UNIQUE per meta box. Optional since 4.1.5
-    'id' => 'help-project-requirement',
+    'id' => 'gallery-of-love',
 
     // Meta box title - Will appear at the drag and drop handle bar. Required.
-    'title' => __('Project Requirements','framework'),
+    'title' => __('Gallery','framework'),
 
     // Post types, accept custom post types as well - DEFAULT is array('post'). Optional.
-    'pages' => array( 'caring' ),
+    'pages' => array( 'gallery_of_love' ),
 
     // Where the meta box appear: normal (default), advanced, side. Optional.
     'context' => 'normal',
@@ -168,10 +168,9 @@ $meta_boxes[] = array(
     // List of meta fields
     'fields' => array(
         array(
-            'name'             => __('Partner Url','framework'),
-            'id'               => "{$prefix}partner_url",
-            'desc' => __('Paste here Partner Website link','framework'),
-            'type'             => 'text',
+            'id'               => "{$prefix}love_image_attached",
+            'desc' => __('Upload Image','framework'),
+            'type'             => 'thickbox_image',
         )
     )
 );

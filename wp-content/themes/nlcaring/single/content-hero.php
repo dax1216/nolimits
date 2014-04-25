@@ -1,6 +1,6 @@
 <div class="section-heading main">
 	<div class="wrapper">
-		<h1 class="page-title">HERO RALLY</h1>
+		<h1 class="page-title">HERO RALLY <?php edit_help_link(); ?></h1>
 	</div>
 </div>
 <section class="wrapper">

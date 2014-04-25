@@ -2,7 +2,7 @@
 	<div class="callToHelp">
 		<?php  help_gallery(); ?>	
 		<div class="helpSlogan col-half">
-			<div class="artworkHeader"><h2><?php the_title();?></h2></div>
+			<div class="artworkHeader"><h2><?php the_title();?> <?php edit_help_link(); ?></h2></div>
 			<ul class="helpDetails">
 				<li><?php the_author() ?> </li>
 				<li>WHERE THIS HAPPENED</li>

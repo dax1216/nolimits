@@ -38,6 +38,9 @@ if( !function_exists( 'create_caring_post_type' ) ){
 add_action('init', 'create_caring_post_type');
 
 
+
+
+
 /* Create Property Taxonomies */
 /*if( !function_exists( 'build_taxonomies' ) ){
     function build_taxonomies(){
@@ -77,6 +80,48 @@ add_action('init', 'create_caring_post_type');
 add_action( 'init', 'build_taxonomies', 0 );
 
 */
+
+/*Gallery of Love Post type*/
+
+if( !function_exists( 'create_gallery_of_love_post_type' ) ){
+    function create_gallery_of_love_post_type(){
+
+      $labels = array(
+            'name' => __( 'Gallery Of Love','framework'),
+            'singular_name' => __( 'Image','framework' ),
+            'add_new' => __('Add New','framework'),
+            'add_new_item' => __('Add New Image','framework'),
+            'edit_item' => __('Edit Image','framework'),
+            'new_item' => __('New Image','framework'),
+            'view_item' => __('View Image','framework'),
+            'search_items' => __('Search Image','framework'),
+            'not_found' =>  __('No Image found','framework'),
+            'not_found_in_trash' => __('No Image found in Trash','framework'),
+            'parent_item_colon' => ''
+          );
+
+      $args = array(
+            'labels' => $labels,
+            'public' => true,
+            'publicly_queryable' => true,
+            'show_ui' => true,
+            'query_var' => true,
+            'rewrite' => true,
+            'capability_type' => 'post',
+            'hierarchical' => false,
+            'menu_position' => 5,
+            'supports' => array('title'),
+            'rewrite' => array( 'slug' => __('gallery_of_love', 'framework') )
+      );
+
+      register_post_type('gallery_of_love',$args);
+
+    }
+}
+add_action('init', 'create_gallery_of_love_post_type');
+
+
+
 /* Add Custom Columns */
 if( !function_exists( 'help_edit_columns' ) ){
     function help_edit_columns($columns)

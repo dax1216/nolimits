@@ -5,7 +5,6 @@
 <div id="inline" style="display:none;width:800px;">
 	<div class="popupBody">
 		<?php 
-			if(is_user_logged_in()){
 
 				// Get User Id
 				global $current_user;
@@ -89,14 +88,6 @@
 			</div>
 			<div class="clearfix"></div>
 		</div><!--popTop-->
-		<?php 
-			}else{
-				?>
-				<div class="alert-wrapper">
-					<h5><?php _e('Please, Log in to view your hero rally!', 'framework') ?></h5>
-				</div>
-				<?php
-			}
-		?>	
+		
 	</div>
 </div>

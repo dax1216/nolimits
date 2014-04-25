@@ -57,12 +57,7 @@ get_header();
                         $my_properties_query = new WP_Query( $my_props_args );
                         if ( $my_properties_query->have_posts() ) :
 
-                            /* Get Payment Related Options before while loop */
-                            $payments_enabled   = get_option( 'theme_enable_paypal' );
-                            $paypal_merchant_id = get_option( 'theme_paypal_merchant_id' );
-                            $enable_sandbox     = get_option( 'theme_enable_sandbox' );
-                            $payment_amount     = get_option( 'theme_payment_amount' );
-                            $currency_code      = get_option( 'theme_currency_code' );
+                         
 
                             while ( $my_properties_query->have_posts() ) :
                                 $my_properties_query->the_post();
@@ -108,11 +103,9 @@ get_header();
                                             $edit_link = add_query_arg( 'edit_help', $post->ID , $submit_url );
                                             ?><a href="<?php echo $edit_link; ?>"><i class="fa fa-pencil"></i></a><?php
                                         }
-
-                                      
-                                                ?>
-												<a target="_blank" href="<?php the_permalink(); ?>"><i class="fa fa-eye"></i></a>
-												<?php
+										?>
+										<a target="_blank" href="<?php the_permalink(); ?>"><i class="fa fa-eye"></i></a>
+										<?php
                                       
 
                                         /* Delete Post Link Bypassing Trash */

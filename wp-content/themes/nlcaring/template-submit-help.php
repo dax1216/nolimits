@@ -31,6 +31,8 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
             /* check the type of action */
             $action = $_POST['action'];
             if( $action == "add_help" ){
+				// Set Default Status to 1 => call to help
+                 update_post_meta($help_id, $prefix.'help_status','1'); 
                 $new_help['post_status'] = 'publish'; // Choose: publish, pending, future, draft, etc
                 $help_id = wp_insert_post($new_help); // Insert help and get help ID
                 if( $help_id > 0 ){
@@ -40,6 +42,8 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
             }elseif( $action == "update_help" ){
                 $new_help['ID'] = intval($_POST['help_id']);
                 $help_id = wp_update_post( $new_help ); // Update help and get help ID
+				
+				
                 if( $help_id > 0 ){
                     $updated_successfully = true;
                 }
@@ -47,8 +51,7 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
 
             if( $help_id > 0 ){
 
-				// Set Default Status
-                 update_post_meta($help_id, $prefix.'help_status','Call to Help');
+				
                 
                
                 // Attach Address Post Meta
@@ -134,6 +137,7 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
 						$file   = $_FILES['document_file'.$oldval];
 						//echo json_encode($file);
 						$upload = wp_handle_upload($file, array('test_form' => false));
+						//echo json_encode($upload);
 						//echo $upload['file'];
 						if(!isset($upload['error']) && isset($upload['file'])) {
 							$filetype   = wp_check_filetype(basename($upload['file']), null);
@@ -153,6 +157,7 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
 							$attach_id  = wp_insert_attachment($attachment, $upload['file']);
 							//echo $attach_id;
 							$existing_download = (int) get_post_meta($help_id, $attach_key, true);
+							
 							//echo $existing_download;
 					
 							if(is_numeric($existing_download)) {
@@ -160,12 +165,12 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
 							}
 							
 							update_post_meta($help_id, $attach_key, $attach_id);
+							$fields[] = (int) $oldval;
 						}
 					}
-					$fields[] = (int) $oldval;
 					$oldval++;
 				}
-                
+				
 				//Attach instruction Post Meta
 				if(isset($fields)){
 					$get_fields = $_POST['txtnumfields'];
@@ -176,10 +181,11 @@ if(isset($_POST['action']) && is_user_logged_in() ) {
 						}
 					}
 					$j_string = json_encode($fields);
-					update_post_meta($help_id,$prefix.'txtnumfields',$j_string);
-					update_post_meta($help_id,$prefix.'txtnumfiles',$oldval);
+					update_post_meta($help_id,$prefix.'txtnumfields',$j_string);	
 					//echo $j_string;
 				}
+				
+				update_post_meta($help_id,$prefix.'txtnumfiles',$oldval);
 				
 				/* Send Email Notice on Call to help Submit */
                 $action = $_POST['action'];
@@ -285,6 +291,39 @@ get_header();
 			jQuery('#txtclickfiles').val(txtclickfiles);
 		});
 		
+		jQuery('#tbodyfiles').on('click', '.del_files', function(evt){
+			evt.preventDefault();	
+			rel = jQuery(this).attr('rel');
+			var new_obj_fields = [];
+			
+			attachment_id = jQuery('.document_file_id'+rel).attr('rel');
+			
+			jQuery.ajax({
+				type: 'post',
+				url: '/wp-admin/admin-ajax.php',
+				data: {
+					action: 'delete_attachment',
+					download_id: attachment_id
+				},
+				success: function() {
+					jQuery('.document_file_id'+rel).remove();
+					txtnumfields = jQuery('#txtnumfields').val();
+					obj_fields = JSON.parse(txtnumfields);
+					for (index = 0; index < obj_fields.length; ++index) {
+						if(obj_fields[index] != rel) {
+							new_obj_fields.push(obj_fields[index]);
+						}
+					}
+					if(new_obj_fields.length == 0) {
+						jQuery('#txtnumfields').val('');
+					} else {
+						jQuery('#txtnumfields').val('['+new_obj_fields+']');
+					}
+				}
+			});			
+		
+		});
+		
 	});
 </script>
 
@@ -320,7 +359,8 @@ get_header();
                                     $submit_message = get_option('theme_submit_message');
                                     alert( __('<p class="success message">Success:','framework'), $submit_message );
                                 }elseif($updated_successfully){
-                                    echo '<p class="success message">Help updated successfully!</p>';
+									 $edit_help_id = intval(trim($_GET['edit_help']));
+                                    echo '<p class="success message">Help updated successfully! <a class="btn-view-help" href="'.get_permalink($edit_help_id).'">View Help</a></p>';
                                 }else{
 
                                     /* if passed parameter is properly set to edit help */
@@ -376,7 +416,7 @@ get_header();
 													</div>
 													
 													 <div class="form-option">
-														<label for="title"><?php _e('Video','framework'); ?></label>
+														<label for="title"><i class="fa fa-play"></i> <?php _e('Video','framework'); ?></label>
 														<input id="video_url" name="video_url" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'video_url'] ) ){ echo $post_meta_data[$prefix.'video_url'][0]; } ?>" />
 														<div class="field-description">
 															<?php _e( 'Please provide instruction video,', 'framework'); ?>
@@ -413,7 +453,7 @@ get_header();
                                             </div>
                                               
                                             <div class="form-option">
-                                                      <label for="featured-image"><?php _e('Featured Image','framework'); ?></label>
+                                                      <label for="featured-image"><i class="fa fa-picture-o"></i> <?php _e('Featured Image','framework'); ?></label>
                                                         <div id="featured-thumb-container" class="clearfix">
                                                             <?php
                                                             if( has_post_thumbnail( $target_help->ID ) ){
@@ -434,7 +474,7 @@ get_header();
                                                     </div>
 													
 													 <div class="form-option">
-                                                        <label><?php _e('Gallery Images','framework'); ?></label>
+                                                        <label><i class="fa fa-picture-o"></i> <?php _e('Gallery Images','framework'); ?></label>
                                                         <div id="gallery-thumbs-container" class="clearfix">
                                                             <?php
                                                             $thumbnail_size = 'thumbnail';
@@ -460,39 +500,11 @@ get_header();
                                                         </div>
                                                     </div>
 													
-													
-													<div class="form-option">
-                                                        <label><?php _e('Hero Images','framework'); ?></label>
-                                                        <div id="gallery-thumbs-container" class="clearfix">
-                                                            <?php
-                                                            $thumbnail_size = 'thumbnail';
-                                                            $caring_hero_images = rwmb_meta( $prefix.'caring_hero_images', 'type=plupload_image&size='.$thumbnail_size, $target_help->ID );
-                                                            if( !empty($caring_hero_images) ){
-                                                                foreach( $caring_hero_images as $prop_image_id=>$prop_image_meta ){
-                                                                    echo '<div class="gallery-thumb">';
-                                                                    echo '<img src="'.$prop_image_meta['url'].'" alt="'.$prop_image_meta['title'].'" />';
-                                                                    echo '<a class="remove-image" data-help-id="'.$target_help->ID.'" data-gallery-img-id="'.$prop_image_id.'" href="'. site_url("/wp-admin/admin-ajax.php") .'" ><i class="fa fa-trash-o"></i></a>';
-                                                                    echo '<span class="loader"><i class="fa fa-spinner fa-spin"></i></span>';
-                                                                    echo '</div>';
-                                                                }
-                                                            }
-                                                            ?>
-                                                        </div>
-                                                        <label><?php _e('Add hero images','framework'); ?></label>
-                                                        <div id="gallery-images-container">
-                                                            <div class="controls-holder"><input class="gallery-image image" name="gallery_image_1" type="file" /></div>
-                                                        </div>
-                                                        <button id="add-more" class="real-btn"><?php _e('Add More','framework'); ?></button>
-                                                        <div class="field-description">
-                                                            <?php _e('Provide images for gallery on help detail page. Images should have minimum width of 770px and minimum height of 386px. ( Bigger images will be cropped automatically )','framework'); ?>
-                                                        </div>
-                                                    </div>
-													
                                         </div>
 
                                                 <div class="span6">
                                                     <div class="form-option">
-                                                        <label for="address"><?php _e('Address', 'framework'); ?></label>
+                                                        <label for="address"><i class="fa fa-map-marker"></i> <?php _e('Address', 'framework'); ?></label>
                                                         <input type="text" class="required" name="address" id="address" value="<?php if( isset( $post_meta_data[$prefix.'caring_address'] ) ){ echo $post_meta_data[$prefix.'caring_address'][0]; } ?>" title="<?php _e( '* Please provide a help address!', 'framework'); ?>" required/>
                                                         <div class="map-wrapper">
                                                             <button class="real-btn goto-address-button" type="button" value="address"><?php _e( 'Find Address','framework' ); ?></button>
@@ -502,7 +514,7 @@ get_header();
                                                     </div>
 													
 													<div class="form-option">
-														<label for="title"><?php _e('Postal Location','framework'); ?></label>
+														<label for="title"><i class="fa fa-location-arrow"></i> <?php _e('Postal Location','framework'); ?></label>
 														<input id="postal_location" name="postal_location" type="text" class="" title="" value="<?php if( isset( $post_meta_data[$prefix.'postal_location'] ) ){ echo $post_meta_data[$prefix.'postal_location'][0]; } ?>" />												
 													</div>
 
@@ -518,28 +530,39 @@ get_header();
 																		<th>File</th>
 																		<th>Size</th>
 																		<th>Extension</th>
+																		<th></th>
 																	</tr>
 																</thead>
-																<tbody>
+																<tbody id="tbodyfiles">
 																<?php
-																	//echo json_encode($post_meta_data);
-																	if(!empty($post_meta_data[$prefix.'txtnumfields'][0])) {
-
-																		ob_start();
-																		echo $post_meta_data[$prefix.'txtnumfields'][0];
-																		$fields_val = ob_get_clean();
+																
+																	ob_start();
+																	echo $post_meta_data[$prefix.'txtnumfields'][0];
+																	$fields_val = ob_get_clean();
+																
+																	if(!empty($post_meta_data[$prefix.'txtnumfields'][0]) && $fields_val != '""') {
 		
 																		$fields_array = json_decode($fields_val, true);										
 																		foreach($fields_array as $i_fields_array => $this_fields_array) {
 																			$download_id = get_post_meta($target_help->ID, 'document_file_id'.$this_fields_array, true);													
 																			$bytes = filesize(get_attached_file($download_id));
 																			$ext_data = wp_check_filetype(wp_get_attachment_url($download_id));
-																			
-																			$rows[] =	'<tr>'
-																								.'<td><a href="' . wp_get_attachment_url($download_id) . '">View Document</a></td>'
-																								.'<td>'.size_format($bytes).'</td>'
-																								.'<td>'.$ext_data['type'].'</td>'
-																							.'</tr>';
+																			//echo json_encode($ext_data);
+																			if($ext_data['ext'] == 'zip') {
+																				$rows[] =	'<tr rel="'.$download_id.'" class="document_file_id'.$this_fields_array.'">'
+																									.'<td><a href="' . wp_get_attachment_url($download_id) . '">Download File</a></td>'
+																									.'<td>'.size_format($bytes).'</td>'
+																									.'<td>'.$ext_data['type'].'</td>'
+																									.'<td><a class="del_files" rel="'.$this_fields_array.'" href="#">Delete</a></td>'
+																								.'</tr>';
+																			} else {
+																				$rows[] =	'<tr rel="'.$download_id.'" class="document_file_id'.$this_fields_array.'">'
+																									.'<td><a href="' . wp_get_attachment_url($download_id) . '">View Document</a></td>'
+																									.'<td>'.size_format($bytes).'</td>'
+																									.'<td>'.$ext_data['type'].'</td>'
+																									.'<td><a class="del_files" rel="'.$this_fields_array.'" href="#">Delete</a></td>'
+																								.'</tr>';
+																			}
 																		}																			
 																	} else {
 																		$rows[] = 	'<tr>'
@@ -687,7 +710,7 @@ get_header();
                                             </div>
 
                                             <div class="form-option">
-                                                <label for="description"><?php _e('Description','framework'); ?></label>
+                                                <label for="description"> <i class="fa fa-text-width"></i> <?php _e('Description','framework'); ?></label>
                                                 <!--textarea name="description" id="description" cols="30" rows="5"></textarea-->												
 												<?php
 												$content = '';
@@ -699,24 +722,7 @@ get_header();
 												?>
                                             </div>
 											
-											<!--div class="form-option">
-                                                <label for="description"><?php _e('Instruction','framework'); ?></label>									
-												<?php
-												$content = '';
-												$editor_id = 'instruction';
-												$settings = array( 'quicktags'=>FALSE, 'teeny'=>TRUE, 'media_buttons'=>FALSE,'editor_class'=>'customTinyMCE','textarea_rows'=> get_option('default_post_edit_rows', 8));
-												wp_editor( $content, $editor_id, $settings );
-
-												?>
-                                            </div>
-											
-											 <div class="form-option">
-                                                <label for="title"><?php _e('Video','framework'); ?></label>
-                                                <input id="video" name="video" type="text" class="" title="" />
-												<div class="field-description">
-                                                    <?php _e('Provide instruction video URL. Theme supports YouTube, Vimeo, SWF File and MOV File', 'framework'); ?>
-                                                </div>
-                                            </div-->
+										
 												
 											<div class="form-option">
                                                 <label for="caring_badge"><?php _e('Badge','framework'); ?></label>
@@ -729,7 +735,7 @@ get_header();
 
                                               
                                             <div class="form-option">
-                                                <label for="featured-image"><?php _e('Featured Image','framework'); ?></label>
+                                                <label for="featured-image"><i class="fa fa-picture-o"></i> <?php _e('Featured Image','framework'); ?> </label>
                                                 <input id="featured-image" name="featured_image" type="file" title="<?php _e( '* Please provide image with proper extension! Only .jpg .gif and .png are allowed.!', 'framework'); ?>" class="image required" required/>
                                                 <div class="field-description">
                                                     <?php _e('Image should have minimum width of 770px and minimum height of 386px. ( Bigger image will be cropped automatically )','framework'); ?>
@@ -738,7 +744,7 @@ get_header();
 											
 											
                                             <div class="form-option">
-                                                <label><?php _e('Gallery Images','framework'); ?></label>
+                                                <label><i class="fa fa-picture-o"></i> <?php _e('Gallery Images','framework'); ?></label>
                                                 <div id="gallery-images-container">
                                                     <div class="controls-holder"><input class="gallery-image image" name="gallery_image_1" type="file" /></div>
                                                 </div>
@@ -755,7 +761,7 @@ get_header();
                                         <div class="span6">
 
                                             <div class="form-option">
-                                                <label for="address"><?php _e('Location', 'framework'); ?></label>
+                                                <label for="address"><i class="fa fa-map-marker"></i> <?php _e('Location', 'framework'); ?></label>
                                                 <input type="text" class="required" name="address" id="address" value="Cebu City, Philippines" title="<?php _e( '* Please provide a help address!', 'framework'); ?>" required/>
                                                 <div class="map-wrapper">
                                                     <button class="real-btn goto-address-button" type="button" value="address"><?php _e( 'Find location','framework' ); ?></button>
@@ -765,7 +771,7 @@ get_header();
                                             </div>
 												
 											<div class="form-option">
-                                                <label for="title"><?php _e('Postal Location','framework'); ?></label>
+                                                <label for="title"><i class="fa fa-location-arrow"></i> <?php _e('Postal Location','framework'); ?></label>
                                                 <input id="postal_location" name="postal_location" type="text" class="" title="" />												
                                             </div>
 
@@ -787,7 +793,7 @@ get_header();
                             } /* end of invalid nonce */
 
                         }else{
-							echo '<p class="error message">Please <a href="/my-account/">login</a> to submit call to help!</p>';
+							echo '<p class="error message">Please <a href="/my-account/">login</a> to submit help!</p>';
                         }
                         ?>
 			</div>
